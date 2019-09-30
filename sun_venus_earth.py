@@ -36,11 +36,11 @@ def integrate_solar_system(particles, end_time):
     #print(particles)
     #converter_body = nbody_system.nbody_to_si(particles.mass.sum(),
     #                                       	particles[1].position.length())
-    converter_body = nbody_system.nbody_to_generic(1|units.kg, 1|units.m)
+    converter_body = nbody_system.nbody_to_si(1|units.kg, 1|units.m)
     #print(convert_nbody)
-    converter = ConvertBetweenGenericAndSiUnits(particles)#????????????????????
+    #converter = ConvertBetweenGenericAndSiUnits(particles)#????????????????????
     #gravity = Huayno(converter.to_si(particles))
-    gravity = Huayno(converr_body)
+    gravity = Huayno(converter_body)
     gravity.particles.add_particles(particles)
     sun = gravity.particles[0]
     venus = gravity.particles[1]

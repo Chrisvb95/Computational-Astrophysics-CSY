@@ -1,29 +1,31 @@
 ###BOOKLISTSTART1###
 from amuse.lab import Particles, units
+from amuse.lab import SmallN, Huayno, nbody_system
+    
 
 v1 = 0.2009656237
 v2 = 0.2431076328
-T = 19.0134164290 | units.yr
+T = 20 | nbody_system.time
 
 def sun_venus_and_earth():
     particles = Particles(3)
     sun = particles[0]
-    sun.mass = 1.0 | units.MSun
-    sun.radius = 1.0 | units.RSun
-    sun.position = (-1, 0., 0.) | units.AU
-    sun.velocity = (v1, v2, 0) | (units.AU / units.yr)
+    sun.mass = 1.0 | nbody_system.mass
+    #sun.radius = 1.0 | units.RSun
+    sun.position = (-1, 0., 0.) | nbody_system.length
+    sun.velocity = (v1, v2, 0) | nbody_system.speed
     
     venus = particles[1]
-    venus.mass = 1.0 | units.MSun
-    venus.radius = 1.0 | units.RSun
-    venus.position = (1., 0., 0.) | units.AU
-    venus.velocity = (v1, v2, 0.) | (units.AU / units.yr)
+    venus.mass = 1.0 | nbody_system.mass
+    #venus.radius = 1.0 | units.RSun
+    venus.position = (1., 0., 0.) | nbody_system.length
+    venus.velocity = (v1, v2, 0.) | nbody_system.speed
     
     earth = particles[2]
-    earth.mass = 0.5 | units.MSun
-    earth.radius = 0.79 | units.RSun
-    earth.position = (0., 0., 0.) | units.AU
-    earth.velocity = (-4 * v1, -4 * v2, 0.) | (units.AU / units.yr)
+    earth.mass = 0.5 | nbody_system.mass
+    #earth.radius = 1.0 | units.RSun
+    earth.position = (0., 0., 0.) | nbody_system.length
+    earth.velocity = (-4 * v1, -4 * v2, 0.) | nbody_system.speed
     
     particles.move_to_center()
     return particles
@@ -31,32 +33,30 @@ def sun_venus_and_earth():
 
 ###BOOKLISTSTART2###
 def integrate_solar_system(particles, end_time):
-    from amuse.lab import SmallN, nbody_system
-    from amuse.units.generic_unit_converter import ConvertBetweenGenericAndSiUnits
     from amuse.units import constants, units
     #print(particles)
-    convert_body = nbody_system.nbody_to_si(particles.mass.sum(),
-                                            particles[1].position.length())
+    #convert_body = nbody_system.nbody_to_si(particles.mass.sum(),
+    #                                        particles[1].position.length())
 
-    gravity = SmallN(convert_body)
+    gravity = Huayno()
     gravity.particles.add_particles(particles)
     sun = gravity.particles[0]
     venus = gravity.particles[1]
     earth = gravity.particles[2]
     
     
-    x_earth = [] | units.AU
-    y_earth = [] | units.AU
-    x_venus = [] | units.AU
-    y_venus = [] | units.AU
-    x_sun = [] | units.AU
-    y_sun = [] | units.AU
+    x_earth = [] | nbody_system.length
+    y_earth = [] | nbody_system.length
+    x_venus = [] | nbody_system.length
+    y_venus = [] | nbody_system.length
+    x_sun = [] | nbody_system.length
+    y_sun = [] | nbody_system.length
     
     while gravity.model_time < end_time:
         
-        gravity.evolve_model(gravity.model_time + (1 | units.day))
+        gravity.evolve_model(gravity.model_time + (0.001 | nbody_system.time))
         x_sun.append(sun.x)
-	y_sun.append(sun.y)
+        y_sun.append(sun.y)
         x_earth.append(earth.x)
         y_earth.append(earth.y)
         x_venus.append(venus.x)
@@ -76,15 +76,15 @@ def plot_track(xs,ys,xe,ye,xv,yv, output_filename):
     ax.minorticks_on() 
     ax.locator_params(nbins=3)
 
-    x_label = 'x [AU]'
-    y_label = 'y [AU]'
+    x_label = 'x'
+    y_label = 'y'
     pyplot.xlabel(x_label)
     pyplot.ylabel(y_label)
 
     
-    plot.plot(xe.value_in(units.AU), ye.value_in(units.AU), color = 'b')
-    plot.plot(xv.value_in(units.AU), yv.value_in(units.AU), color = 'r')
-    plot.plot(xs.value_in(units.AU), ys.value_in(units.AU), color = 'k')
+    plot.plot(xe.value_in(nbody_system.length), ye.value_in(nbody_system.length), color = 'b')
+    plot.plot(xv.value_in(nbody_system.length), yv.value_in(nbody_system.length), color = 'r')
+    plot.plot(xs.value_in(nbody_system.length), ys.value_in(nbody_system.length), color = 'k')
         
     plot.set_xlim(-1.3, 1.3)
     plot.set_ylim(-1.3, 1.3)
