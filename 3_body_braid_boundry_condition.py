@@ -101,7 +101,11 @@ def integrate_solar_system(particles, end_time):
 	        np.array(body0.vx.value_in(nbody_system.speed)),
 	        np.array(body0.vy.value_in(nbody_system.speed)))
 	sig_array.append(sig)
-	if sig < 10e-3:
+	if time_step > 2: 
+		slope = (sig_array[-2] - sig_array[-3]) * (sig_array[-1] - sig_array[-2])
+	else: slope = 1
+		
+	if (sig < 10e-2) and (slope < 0):
 		Cycle += 1
 		print(x_body0.value_in(nbody_system.length)[-1], y_body0.value_in(nbody_system.length)[-1],
 		vx_body0.value_in(nbody_system.speed)[-1], vy_body0.value_in(nbody_system.speed)[-1])
