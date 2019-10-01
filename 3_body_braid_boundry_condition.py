@@ -38,6 +38,7 @@ def body_init():
 ###BOOKLISTSTART2###
 def integrate_solar_system(particles, end_time):
     from amuse.units import constants, units
+    import matplotlib.pyplot as plt
    
     gravity = Hermite()
     gravity.particles.add_particles(particles)
@@ -52,8 +53,8 @@ def integrate_solar_system(particles, end_time):
     x_body2 = [] | nbody_system.length
     y_body2 = [] | nbody_system.length
 
-    #vx_body0 = [] | nbody_system.speed
-    #vy_body0 = [] | nbody_system.speed
+    vx_body0 = [] | nbody_system.speed
+    vy_body0 = [] | nbody_system.speed
 
     x_body0.append(body0.x)
     y_body0.append(body0.y)
@@ -62,28 +63,63 @@ def integrate_solar_system(particles, end_time):
     x_body2.append(body2.x)
     y_body2.append(body2.y)    
 
-    #vx_body0.append(body0.vx)
-    #vy_body0.append(body0.vy)
-    sig = 1
+    vx_body0.append(body0.vx)
+    vy_body0.append(body0.vy)
+    
+    
+    
+    fig = plt.figure(figsize=(8,16))
+    ax1 = fig.add_subplot(211, xlabel = 'Integraion time step', ylabel = 'Return proximity function', 
+				title='Deviation from the initial point after each period')
+    ax2 = fig.add_subplot(212, xlabel = 'Intergration time step', ylabel = 'Return proximity function',
+				title='Return proximity function per time step')
 
-    while sig > 10e-3:#gravity.model_time < end_time:
-        
-        gravity.evolve_model(gravity.model_time + (0.005 | nbody_system.time))
-        x_body0.append(body0.x)
-        y_body0.append(body0.y)
-        x_body1.append(body1.x)
-        y_body1.append(body1.y)
-        x_body2.append(body2.x)
-        y_body2.append(body2.y)
+    sig = sigma(np.array(body0.x.value_in(nbody_system.length)),
+	        np.array(body0.y.value_in(nbody_system.length)),
+	        np.array(body0.vx.value_in(nbody_system.speed)),
+	        np.array(body0.vy.value_in(nbody_system.speed)))
+    Cycle = 0
+    sig_array = []
+    time_step = 0
+    sig_O_x = [0]
+    sig_O_y = [sig]
+    while (Cycle < 4 and sig < 3): #gravity.model_time < end_time:
+	
+	gravity.evolve_model(gravity.model_time + (0.005 | nbody_system.time))
+	x_body0.append(body0.x)
+	y_body0.append(body0.y)
+	x_body1.append(body1.x)
+	y_body1.append(body1.y)
+	x_body2.append(body2.x)
+	y_body2.append(body2.y)
 
-        #vx_body0.append(body0.vx)
-        #vy_body0.append(body0.vy)
-        sig = sigma(np.array(body0.x.value_in(nbody_system.length)),
-                np.array(body0.y.value_in(nbody_system.length)),
-                np.array(body0.vx.value_in(nbody_system.speed)),
-                np.array(body0.vy.value_in(nbody_system.speed)))
-    print(gravity.model_time)
+	vx_body0.append(body0.vx)
+	vy_body0.append(body0.vy)
+	
+	sig = sigma(np.array(body0.x.value_in(nbody_system.length)),
+	        np.array(body0.y.value_in(nbody_system.length)),
+	        np.array(body0.vx.value_in(nbody_system.speed)),
+	        np.array(body0.vy.value_in(nbody_system.speed)))
+	sig_array.append(sig)
+	if sig < 10e-3:
+		Cycle += 1
+		print(x_body0.value_in(nbody_system.length)[-1], y_body0.value_in(nbody_system.length)[-1],
+		vx_body0.value_in(nbody_system.speed)[-1], vy_body0.value_in(nbody_system.speed)[-1])
+		print(sig)
+		sig_O_x.append(time_step)
+		sig_O_y.append(sig)
+		
+	#plt.scatter(time_step, sig, color='b')
+	time_step += 1
+    #print(gravity.model_time)
     gravity.stop()
+    ax1.plot(sig_O_x, sig_O_y, color = 'k')
+
+    ax2.plot(sig_array)
+    ax2.plot(range(time_step), np.zeros(time_step))
+    ax2.scatter(sig_O_x, sig_O_y, color = 'k')
+
+    plt.show()
     return x_body0, y_body0, x_body1, y_body1, x_body2, y_body2
     
 ###BOOKLISTSTOP2###
@@ -134,5 +170,5 @@ if __name__ in ('__main__','__plot__'):
 
     particles = body_init()
     x0,y0, x1,y1, x2,y2= integrate_solar_system(particles, T)
-    plot_track(x0, y0, x1, y1, x2, y2, o.output_filename)
+    #plot_track(x0, y0, x1, y1, x2, y2, o.output_filename)
     
