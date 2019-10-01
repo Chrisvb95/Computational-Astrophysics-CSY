@@ -3,10 +3,11 @@ from amuse.lab import Particles, units
 from amuse.lab import SmallN, Huayno, Hermite, nbody_system
 import numpy as np
 
-v1_init = 0.2009656237
-v2_init = 0.2431076328
+v1_init = 0.9911981217
+v2_init = 0.7119472124
+m3 = 4
 init = np.array([-1,0,v1_init,v2_init])
-P = 19.0134164290
+P = 17.6507807837
 T = P*1 | nbody_system.time
 
 def sigma(x1,x2,v1,v2):
@@ -27,9 +28,9 @@ def body_init():
     body1.velocity = (v1_init, v2_init, 0.) | nbody_system.speed
     
     body2 = particles[2]
-    body2.mass = 0.5 | nbody_system.mass
+    body2.mass = m3 | nbody_system.mass
     body2.position = (0., 0., 0.) | nbody_system.length
-    body2.velocity = (-4 * v1_init, -4 * v2_init, 0.) | nbody_system.speed
+    body2.velocity = (-2 * v1_init / m3, -2 * v2_init / m3, 0.) | nbody_system.speed
     
     particles.move_to_center()
     return particles
@@ -83,7 +84,7 @@ def integrate_solar_system(particles, end_time):
     time_step = 0
     sig_O_x = [0]
     sig_O_y = [sig]
-    while (Cycle < 4 and sig < 3): #gravity.model_time < end_time:
+    while (Cycle < 4 and sig < 200): #gravity.model_time < end_time:
 	
 	gravity.evolve_model(gravity.model_time + (0.005 | nbody_system.time))
 	x_body0.append(body0.x)
@@ -174,5 +175,5 @@ if __name__ in ('__main__','__plot__'):
 
     particles = body_init()
     x0,y0, x1,y1, x2,y2= integrate_solar_system(particles, T)
-    #plot_track(x0, y0, x1, y1, x2, y2, o.output_filename)
+    plot_track(x0, y0, x1, y1, x2, y2, o.output_filename)
     
