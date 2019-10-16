@@ -1,5 +1,7 @@
 import numpy as np
 import sys
+import pickle as pkl
+import time
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from amuse.units import units
@@ -24,7 +26,7 @@ def cluster_init(N,mMin,mMax,alpha,mCluster,rCluster):
     
     return cluster
 
-def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster):
+def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=False):
     
     converter=nbody_system.nbody_to_si(mCluster,rCluster)
     # Splitting particle according to mass_cut
@@ -34,7 +36,6 @@ def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster):
     # Sanity checks    
     print('Number of low-mass stars:',low_mass_stars.__len__())
     print('Number of high-mass stars:',high_mass_stars.__len__())
-    plot_cluster(low_mass_stars, high_mass_stars)
     
     # Making models and assigning particles    
     code_tree = BHTree(converter)
@@ -49,22 +50,42 @@ def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster):
     combined_gravity.add_system(code_tree,(code_direct,))
     combined_gravity.add_system(code_direct,(code_tree,))
     combined_gravity.timestep = dt
-    
+
+    # Making first snapshot    
+    #plot_cluster(low_mass_stars,high_mass_stars,'t=0',save=True)    
+
+    start_time = time.time()
+
     # Evolving the model
     times = quantities.arange(0|units.Myr, tend, dt)
+    mCut_str = str(mCut.value_in(units.MSun))
     for i,t in enumerate(times):
         print "Time=", t.in_(units.Myr)
         channel_from_code_tree.copy()
-        channel_from_code_direct.copy()
-        
+        channel_from_code_direct.copy()        
         combined_gravity.evolve_model(t, timestep=dt)
+        snapshot_name = 't_'+str(t.in_(units.Myr))
+        plot_cluster(low_mass_stars,high_mass_stars,snapshot_name,save=True)
+        time = str(t.value_in(units.Myr))
+        
+        if dump:
+            pkl.dump(low_mass_stars, 
+                     open('data_dump/t'+time+'_m'+mCut_str+'_low_mass.p',
+                     'wb'))
+            pkl.dump(high_mass_stars, 
+                     open('data_dump/t'+time+'_m'+mCut_str+'_high_mass.p',
+                     'wb'))
+
+    elapsed_time = time.time()-start_time
+    print('Total runtime of simulation:',elapsed_time)    
+            
     code_tree.stop()
     code_direct.stop()    
     
     # Plotting results        
-    plot_cluster(low_mass_stars, high_mass_stars)
+    #plot_cluster(low_mass_stars, high_mass_stars)
     
-def plot_cluster(low_mass, high_mass):
+def plot_cluster(low_mass, high_mass, title, save=False):
     
     m_low = low_mass.mass.value_in(units.MSun)
     x_low = low_mass.x.value_in(units.parsec)
@@ -77,15 +98,24 @@ def plot_cluster(low_mass, high_mass):
     z_high = high_mass.z.value_in(units.parsec)
 
     fig = plt.figure()
-    ax = fig.add_subplot(111,projection='3d')
-    ax.scatter(x_low,y_low,z_low, c='b',zorder=0)
-    ax.scatter(x_high,y_high,z_high, c='r',zorder=1)    
-    plt.show()
+    ax = fig.add_subplot(111)
+    ax.scatter(x_low,y_low, c='b',zorder=0,marker='.')
+    ax.scatter(x_high,y_high, c='r',zorder=1,marker='.') 
+
+    plt.xlim(left=-50,right=50)  
+    plt.ylim(top=50,bottom=-50)
     
-    masses = np.append(m_high,m_low)
-    plt.hist(masses,range=[0.1,100],bins=100)
-    plt.yscale('log')    
-    plt.show()
+    if save:
+        plt.savefig('figs/'+title+'.png')
+    else:    
+        plt.show()
+    plt.close()    
+  
+    #masses = np.append(m_high,m_low)
+    #plt.hist(masses,range=[0.1,100],bins=100)
+    #plt.yscale('log')
+    #plt.title(title)
+    
  
 if __name__ == "__main__":
     
@@ -104,12 +134,12 @@ if __name__ == "__main__":
     rCluster = 3|units.parsec    
 
     # Setting parameters for evolving the model
-    mCut = 10|units.MSun
+    mCut = 0|units.MSun
     dt = 0.1 |units.Myr
-    tend = 1 |units.Myr
+    tend = 10 |units.Myr
 
     cluster = cluster_init(N,mMin,mMax,alpha,mCluster,rCluster)
-    evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster)    
+    evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=True)    
 
     #plot_cluster(cluster)
 
