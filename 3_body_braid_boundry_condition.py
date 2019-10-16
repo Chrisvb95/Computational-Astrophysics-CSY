@@ -2,43 +2,33 @@ from amuse.lab import Particles, units
 from amuse.lab import Hermite, nbody_system
 import numpy as np
 
-#Initial Condition
-v1_init = 0.9911981217
-v2_init = 0.7119472124
-m3 = 4
-Cycle = 1
-lower_boundry = 1e-1
-upper_boundry = 25
-#P = 17.6507807837 # uncomment, if you want to use time boundry
-#T = P * 1 | nbody_system.time # uncomment, if you want to use time boundry
-
 
 def sigma(x1,x2, v1,v2): #Calculates the return proximity function at any point
     init = np.array([-1, 0, v1_init, v2_init])
     current = np.array([x1, x2, v1, v2])
     return np.sqrt(np.sum((current - init) ** 2))    
     
-def body_init():
+def body_init(v1, v2, m3): # Initial condition (mass, coordinates, velocities)
     particles = Particles(3)
     body0 = particles[0]
     body0.mass = 1.0 | nbody_system.mass
     body0.position = (-1, 0., 0.) | nbody_system.length
-    body0.velocity = (v1_init, v2_init, 0) | nbody_system.speed
+    body0.velocity = (v1, v2, 0) | nbody_system.speed
     
     body1 = particles[1]
     body1.mass = 1.0 | nbody_system.mass
     body1.position = (1., 0., 0.) | nbody_system.length
-    body1.velocity = (v1_init, v2_init, 0.) | nbody_system.speed
+    body1.velocity = (v1, v2, 0.) | nbody_system.speed
     
     body2 = particles[2]
     body2.mass = m3 | nbody_system.mass
     body2.position = (0., 0., 0.) | nbody_system.length
-    body2.velocity = (-2 * v1_init / m3, -2 * v2_init / m3, 0.) | nbody_system.speed
+    body2.velocity = (-2 * v1 / m3, -2 * v2 / m3, 0.) | nbody_system.speed
     
     particles.move_to_center()
     return particles
 
-def integrate_3body_system(particles):#, end_time):
+def integrate_3body_system(particles, cycle, low_boundary, upper_boundary): #, end_time):
     from amuse.units import constants, units
     import matplotlib.pyplot as plt
    
@@ -82,7 +72,7 @@ def integrate_3body_system(particles):#, end_time):
     time_step = 0
     sig_O_x = [0]
     sig_O_y = [sig]
-    while (c < Cycle and sig < upper_boundry): # gravity.model_time < end_time:
+    while (c < cycle and sig < upper_boundary): # gravity.model_time < end_time:
 	
 	gravity.evolve_model(gravity.model_time + (0.005 | nbody_system.time))
 	x_body0.append(body0.x)
@@ -105,7 +95,7 @@ def integrate_3body_system(particles):#, end_time):
 		slope = (sig_array[-2] - sig_array[-3]) * (sig_array[-1] - sig_array[-2])
 	else: slope = 1
 		
-	if (sig < lower_boundry) and (slope < 0):
+	if (sig < lower_boundary) and (slope < 0):
 		c += 1
 		print(x_body0.value_in(nbody_system.length)[-1], y_body0.value_in(nbody_system.length)[-1],
 		vx_body0.value_in(nbody_system.speed)[-1], vy_body0.value_in(nbody_system.speed)[-1])
@@ -161,8 +151,23 @@ def new_option_parser():
     
 if __name__ in ('__main__','__plot__'):
     o, arguments  = new_option_parser().parse_args()
+    #Initial Condition
+    v1_init = 0.9911981217
+    v2_init = 0.7119472124
+    m3 = 4
 
-    particles = body_init()
-    x0,y0, x1,y1, x2,y2= integrate_3body_system(particles)#, T)
+    Cycle = 1
+
+    #for IA2 deviation boundary
+    lower_boundary = 1e-1
+    upper_boundary = 25
+    #for IA4 deviation boundary
+    #Cycle =
+    #for IA4    
+    #P = 17.6507807837 # uncomment, if you want to use time boundary
+    #T = P * 1 | nbody_system.time # uncomment, if you want to use time boundary
+    
+    particles = body_init(v1_init, v2_init, m3)
+    x0,y0, x1,y1, x2,y2= integrate_3body_system(particles, Cycle, lower_boundary, upper_boundary)#, T)
     plot_track(x0, y0, x1, y1, x2, y2, o.output_filename)
     
