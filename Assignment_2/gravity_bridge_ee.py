@@ -63,7 +63,7 @@ def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster):
     E0 = combined_gravity.potential_energy + combined_gravity.kinetic_energy
                      
     # Evolving the model
-    times = quantities.arange(0.|units.Myr, tend, dt)
+    times = quantities.arange(0.|units.Myr, tend+dt, dt)
     n_step = len(times)
     dE = np.empty(n_step)
     Qs = np.empty(n_step)
@@ -76,8 +76,8 @@ def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster):
 
         combined_gravity.evolve_model(t, timestep=dt)
 
-	U = combined_gravity.potential_energy
-	T = combined_gravity.kinetic_energy
+	U = cluster.potential_energy()
+	T = cluster.kinetic_energy()
 	Et = U + T
 	dE[i] = np.abs((E0-Et)/E0)
 	Qs[i] = -T / U
@@ -106,7 +106,7 @@ def plot_energy_error(times, dE, Qs, mCut):
     ax.set_xlabel('Time (Myr)')
     ax.set_ylabel('Relative Energy Error')
     ax.legend()
-    plt.show()
+    #plt.show()
     fig_ee.savefig('energy_error_%.1f.jpg'%mCut.value_in(units.MSun))
     
 
@@ -135,6 +135,7 @@ def plot_cluster(low_mass, high_mass):
 
 
 if __name__ == "__main__":
+
     
     # Determining number of particles for which the code must be run
     if len(sys.argv) > 1:
@@ -151,8 +152,11 @@ if __name__ == "__main__":
     rCluster = 3|units.parsec    
 
     # Setting parameters for evolving the model
-    mCut_list = np.array([0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 2.0, 3.0, 5.0, 10.0]) |units.MSun
-    #mCut_list = np.array([3.0, 5.0, 10.0]) |units.MSun
+    #mCut_list = np.array([10.0, 8.0, 6.0, 4.0, 2.0, 1.0, 0.8, 0.7, 0.6, 0.5]) | units.MSun
+    #mCut_list = np.array([0.4, 0.5, 0.6, 0.8, 1.0, 2.0, 3.0, 4.0, 6.0, 8.0, 10.0]) |units.MSun
+    #mCut_list = np.array([0.5, 0.6, 0.7]) |units.MSun
+    #mCut_list = np.array([0.8, 0.9, 1.0, 2.0]) |units.MSun
+    mCut_list = np.array([9.0]) |units.MSun
     mCut = 10|units.MSun
     dt = 0.1 |units.Myr
     tend = 10 |units.Myr
@@ -163,22 +167,28 @@ if __name__ == "__main__":
     Q = np.empty(n_mCut)
     wc_time = np.empty(n_mCut)
 
-    cluster = cluster_init(N,mMin,mMax,alpha,mCluster,rCluster)
+    # set a random seed
+    np.random.seed(1)
+    cluster0 = cluster_init(N,mMin,mMax,alpha,mCluster,rCluster)
     
     for i, mCut in enumerate(mCut_list):
+        # set a random seed
+        np.random.seed(1)
+	cluster = cluster0.copy()
         EE[i], Q[i], wc_time[i] = evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster)
-        output_filename = 'ee_q_t.txt'
-        with open(output_filename, 'w'):
-            np.savetxt(output_filename, np.append(np.append(EE,Q),wc_time).reshape(3, n_mCut).transpose())
-        print 'Saved the data of energy error, virial ratios, and wall-clock time in', output_filename
 
-    fig = plt.figure(figsize=(6,10))
-    ax_ee = fig.add_subplot(211)
-    ax_t = fig.add_subplot(212)
-    ax_ee.plot(mCut_list.value_in(units.MSun), EE)
-    ax_ee.plot(mCut_list.value_in(units.MSun), Q)
-    ax_t.plot(mCut_list.value_in(units.MSun), wc_time)
-    fig.show()
+    output_filename = 'ee_q_t_9.txt'
+    with open(output_filename, 'w'):
+        np.savetxt(output_filename, np.append(np.append(EE,Q),wc_time).reshape(3, n_mCut).transpose())
+    print 'Saved the data of energy error, virial ratios, and wall-clock time in', output_filename
+
+    #fig = plt.figure(figsize=(6,10))
+    #ax_ee = fig.add_subplot(211)
+    #ax_t = fig.add_subplot(212)
+    #ax_ee.plot(mCut_list.value_in(units.MSun), EE)
+    #ax_ee.plot(mCut_list.value_in(units.MSun), Q)
+    #ax_t.plot(mCut_list.value_in(units.MSun), wc_time)
+    #fig.show()
     
             
 
