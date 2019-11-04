@@ -143,7 +143,7 @@ def init_passing_star(pericenter, e, M):
     Pstar[1].eccentricity = e
     Pstar[1].argument_of_pericenter = 200 | units.AU
     
-    return Pstar[1]
+    return Pstar
 
 def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic, tend):
 
@@ -156,11 +156,11 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
     gravity.timestep = dt_gravity
    
     # Initialising the SPH code
-    sph_converter = nbody_system.nbody_to_si(Sun.mass, Rmin) 
+    sph_converter = nbody_system.nbody_to_si(Pstar.mass.sum(), Rmin) 
     sph = Fi(sph_converter, mode="openmp")
     sph.gas_particles.add_particles(disk_gas)
     sph.dm_particles.add_particle(Sun)
-    sph.dm_particles.add_particle(Pstar)
+    sph.dm_particles.add_particle(Pstar[1])
     sph.parameters.timestep = dt_sph
 
     print 'Bridging...'
@@ -174,18 +174,20 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
     gravity_to_Jupiter = gravity.particles.new_channel_to(Sun_Jupiter)
     sph_to_disk = sph.gas_particles.new_channel_to(disk_gas)
     sph_to_Sun = sph.dm_particles.new_channel_to(Sun_Jupiter)
+    sph_to_Pstar = sph.dm_particles.new_channel_to(Pstar)
     Jupiter_to_gravity = Sun_Jupiter.new_channel_to(gravity.particles)
     disk_to_sph = disk_gas.new_channel_to(sph.gas_particles)
     Sun_to_sph = Sun_Jupiter.new_channel_to(sph.dm_particles)
+    Pstar_to_sph = Pstar.new_channel_to(sph.dm_particles)
     #channel_from_to_SunJupiter = grav_sph.particles.new_channel_to(Sun_Jupiter)
     
     # Sanity checks:
     print('Sanity checks:')
-    print('Sun coordinates (AU)',Pstar.x.value_in(units.AU),
+    print('Star coordinates (AU)',Pstar.x.value_in(units.AU),
                                  Pstar.y.value_in(units.AU),
                                  Pstar.z.value_in(units.AU))
     print('Disk particle map saved to: initial_check_disk.png')    
-    plot_map(sph, Sun_Jupiter, Pstar,'initial_check_disk.png',show=True)
+    plot_map(sph, Sun_Jupiter, Pstar[1],'initial_check_disk.png',show=True)
 
     a_Jup = []
     e_Jup = []
@@ -195,7 +197,7 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
     print 'Start evolving...'
     times = quantities.arange(0.|units.yr, tend, dt_diagnostic)
     for i,t in enumerate(times):
-        
+	
         # Save the data for plots
         orbit = orbital_elements_from_binary(Sun_Jupiter, G=constants.G)
         a = orbit[2].value_in(units.AU)
@@ -205,16 +207,20 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
         e_Jup.append(e)
         disk_size.append(lr9)
 	# Plotting
+	print('Star coordinates (AU)',Pstar.x.value_in(units.AU),
+                                 Pstar.y.value_in(units.AU),
+                                 Pstar.z.value_in(units.AU))
         print 'Time = %.1f yr:'%t.value_in(units.yr), \
                   'a = %.2f au, e = %.2f,'%(a, e), \
                   'disk size = %.2f au'%lr9
-        plot_map(sph, Sun_Jupiter, Pstar, 
+        plot_map(sph, Sun_Jupiter, Pstar[1], 
 		'distribution_plot_joined_code_new/{0}.png'.format(int(t.value_in(units.yr))),show=False)
         # Evolve the bridge system for one step
         grav_sph.evolve_model(t, dt_diagnostic)
         gravity_to_Jupiter.copy()
         sph_to_disk.copy()
-	Sun_to_sph.copy()
+	sph_to_Sun.copy()
+        sph_to_Pstar.copy()
         # Add the 'sinked' mass to Jupiter & keep the sink particle along with Jupiter
         removed_particles = hydro_sink_particles(sink, disk_gas)
         Jupiter = gravity.particles[0]        
@@ -224,6 +230,7 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
         Jupiter_to_gravity.copy()
 	disk_to_sph.copy()
 	Sun_to_sph.copy()
+	Pstar_to_sph.copy()
     gravity.stop()
     sph.stop()
 
@@ -286,12 +293,12 @@ def init_body_solar_disk_planetary(Ndisk, Mdisk, Rmin, Rmax):
 if __name__ == "__main__":
     
     # Setting parameters
-    tend = 100. | units.yr
+    tend = 1000. | units.yr
     dt_gravity = 1.0 | units.yr
     dt_sph = 0.1 |units.yr
     dt_diagnostic = 1.0 | units.yr
     # Setting proto-disk parameters
-    Ndisk = 4000
+    Ndisk = 10000
     Mdisk = 0.01 | units.MSun
     Rmin = 2. | units.AU
     Rmax = 100. | units.AU
