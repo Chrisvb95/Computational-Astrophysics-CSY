@@ -133,31 +133,27 @@ def new_disk(Mstar=1|units.MSun, Ndisk=500,
     return disk
 
 def evolve_star(Mstar, tstar):
-    stars = Particles(1)
-    stars = Particles(2)
-    stars[0].mass = Mstar
-    stars[1].mass = 0.1*Mstar
-    stellar = SeBa()
-    stellar.particles.add_particle(stars)
-    stellar.evolve_model(tstar)
-    stars.mass = stellar.particles.mass
-    stars.position = (0, 0, 0) |units.AU
-    stars.velocity = (0, 0, 0) |units.kms
-    stars.luminosity = stellar.particles.luminosity/(20. | units.eV)
-    stars.temperature = stellar.particles.temperature
-    stars.flux = stars.luminosity
-    stars.rho = 1.0|(units.g/units.cm**3)
-    stars.xion = 0.0 #ionization_fraction
-    stars.u = (9. |units.kms)**2 #internal_energy
-    print stars
 
-    if len(stars)>1:
-        stars[1].x = 50|units.AU
-        vc = 1.0*(constants.G*stars.mass.sum()/(100.|units.AU)).sqrt()
-        stars[1].vy += vc
-    
+    print 'Particles:', Particles(2)
+        
+    star = Particles(1)
+    star[0].mass = Mstar
+    stellar = SeBa()
+    stellar.particles.add_particle(star)
+    stellar.evolve_model(tstar)
+    star.mass = stellar.particles.mass
+    star.position = (0, 0, 0) |units.AU
+    star.velocity = (0, 0, 0) |units.kms
+    star.luminosity = stellar.particles.luminosity/(20. | units.eV)
+    star.temperature = stellar.particles.temperature
+    star.flux = star.luminosity
+    star.rho = 1.0|(units.g/units.cm**3)
+    star.xion = 0.0 #ionization_fraction
+    star.u = (9. |units.kms)**2 #internal_energy
+
     stellar.stop()
-    return stars
+    print 'stars', star
+    return star
  
 def hydro_disk(Mstar=1|units.MSun, Ndisk=500,
                Rmin=1.0|units.AU, Rmax=100.0|units.AU,
@@ -178,7 +174,7 @@ def hydro_disk(Mstar=1|units.MSun, Ndisk=500,
     while time<t_end:
         time += dt
         radhydro.evolve_model(time)
-        #radhydro.print_diagnostics()
+        radhydro.print_diagnostics()
         radhydro.write_file()
         lr9.append(radhydro.return_L9_radius(Mstar,Rmin))
     radhydro.stop()
@@ -193,7 +189,8 @@ def hydro_disk(Mstar=1|units.MSun, Ndisk=500,
     
     plt.scatter(t,lr9)
     plt.xlabel('Time (years)')
-    plt.ylabel('Disk size (AU)')    
+    plt.ylabel('Disk size (AU)')
+    plt.savefig('disk_radius_time_plot.png')    
     plt.show()
 
 if __name__ in '__main__':

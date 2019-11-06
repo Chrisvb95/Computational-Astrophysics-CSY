@@ -156,7 +156,7 @@ def main(t_end=1000.|units.yr, dt=10.|units.yr):
     print 'Initializing...'
     converter = nbody_system.nbody_to_si(1.|units.MSun, 1.|units.AU)
 
-    # iniialize the gravity system
+    # Initialize the gravity system
     Sun_and_Jupiter = init_sun_jupiter()
     Sun = Sun_and_Jupiter[0]
     Jupiter = Sun_and_Jupiter[1]
