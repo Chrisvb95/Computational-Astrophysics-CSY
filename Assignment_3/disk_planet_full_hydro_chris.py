@@ -1,6 +1,6 @@
 # -*- coding: ascii -*-
 """
-Task 3: Sun + Jupiter(sink) + disk
+Task 4: Sun + Jupiter(sink) + disk + passing star
 """
 #from __future__ import print_function
 import numpy as np
@@ -222,12 +222,26 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
 
     return times, a_Jup, e_Jup, disk_size, accreted_mass
 
+if __name__ == "__main__":
+    
+    # ------ Setting parameters ------
+    # Simulation parameters
+    tend = 500. | units.yr
+    dt_gravity = 0.1 | units.yr
+    dt_sph = 0.01 |units.yr
+    dt_diagnostic = 1.0 | units.yr
+    dt_bridge = 0.1 | units.yr
+    # Proto-disk parameters
+    Ndisk = 4000
+    Mdisk = 0.01 | units.MSun
+    Rmin = 2. | units.AU
+    Rmax = 100. | units.AU
+    # Passing star parameters
+    e = 1.2
+    Mstar = 2.0 | units.MSun
+    pericenter = 200.0 | units.AU
 
-def init_body_solar_disk_planetary(Ndisk, Mdisk, Rmin, Rmax):
-
-    print 'Initializing...'
-    #converter = nbody_system.nbody_to_si(1.|units.MJupiter, 1.|units.AU)
-
+    # ------ Initialising the different elements ------
     # Initialize the solar system
     Sun_Jupiter = init_sun_jupiter()
     Sun = Sun_Jupiter[0]
@@ -250,32 +264,14 @@ def init_body_solar_disk_planetary(Ndisk, Mdisk, Rmin, Rmax):
     sink = init_sink_particle(0.|units.MSun, hr, Jupiter.position, Jupiter.velocity)
     
     # Initizalize the passing star
-    e = 1.2
-    Mstar = 2.0 | units.MSun
-    pericenter = 200.0 | units.AU
     Pstar = init_passing_star(pericenter, e, Mstar)
 
-    return Sun_Jupiter, disk_gas, sink, Pstar
-
-
-if __name__ == "__main__":
-    
-    # Setting parameters
-    tend = 500. | units.yr
-    dt_gravity = 0.1 | units.yr
-    dt_sph = 0.01 |units.yr
-    dt_diagnostic = 1.0 | units.yr
-    dt_bridge = 0.1 | units.yr
-    # Setting proto-disk parameters
-    Ndisk = 4000
-    Mdisk = 0.01 | units.MSun
-    Rmin = 2. | units.AU
-    Rmax = 100. | units.AU
-
-    Sun_Jupiter, disk_gas, sink, Pstar = init_body_solar_disk_planetary(Ndisk, Mdisk, Rmin, Rmax)
+    # ------ Running the building and running hydro-code ------
+    # Main function
     t, a_Jup, e_Jup, disk_size, accreted_mass= evolve(Sun_Jupiter, 
 			disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic, dt_bridge,tend)
 
+    # Saving the output
     sim_output = np.column_stack((t.value_in(units.yr), a_Jup, e_Jup, disk_size, accreted_mass))
     np.savetxt('sim_output.csv',sim_output,delimiter=',')
 
