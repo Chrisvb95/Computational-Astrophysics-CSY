@@ -162,6 +162,8 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
     a_Jup = list()
     e_Jup = list()
     disk_size = list()
+    accreted_mass = []
+    sink0_mass = 0 | units.MSun
 
     # start evolotuion
     print 'Start evolving...'
@@ -177,6 +179,7 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
         a_Jup.append(a)
         e_Jup.append(e)
         disk_size.append(lr9)
+        accreted_mass.append((sink.mass).value_in(units.MJupiter)[0])
 
         #if model_time.value_in(units.yr) % 50 == 0:
         print 'Time = %.1f yr:'%model_time.value_in(units.yr), \
@@ -194,7 +197,8 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
         removed_particles = hydro_sink_particles(sink, disk_gas)
         #Jupiter = gravity.particles[1]
         Jupiter = gravity.particles[0]        
-        Jupiter.mass += sink.mass
+        Jupiter.mass += sink.mass - sink0_mass
+        sink0_mass = sink.mass
         sink.position = Jupiter.position
         sink.radius = a * (1-e) * ((1.0|units.MJupiter).value_in(units.MSun)/3.)**(1./3.) | units.au
         channel_to_grav.copy()
@@ -203,7 +207,7 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
     gravity.stop()
     hydro.stop()
 
-    return a_Jup, e_Jup, disk_size, times
+    return a_Jup, e_Jup, disk_size, times, accreted_mass
 
 
 def main(t_end=1000.|units.yr, dt=10.|units.yr):
@@ -249,38 +253,41 @@ def main(t_end=1000.|units.yr, dt=10.|units.yr):
     sph.parameters.timestep = dt
 
     # bridge and evolve
-    a_Jup, e_Jup, disk_size, times = gravity_hydro_bridge(gravity, sph, sink,
+    a_Jup, e_Jup, disk_size, times, accreted_mass = gravity_hydro_bridge(gravity, sph, sink,
                                      [Sun_and_Jupiter, disk_gas], Rmin, t_end, dt)
 
-    return a_Jup, e_Jup, disk_size, times
+    return a_Jup, e_Jup, disk_size, times, accreted_mass
 
 
 if __name__ == "__main__":
-    t_end = 100. | units.yr
+    t_end = 500. | units.yr
     dt = 1. |units. yr
-    a_Jup, e_Jup, disk_size, times = main(t_end, dt)
+    a_Jup, e_Jup, disk_size, times, accreted_mass = main(t_end, dt)
+    
+    sim_output = np.column_stack((times.value_in(units.yr), a_Jup, e_Jup, disk_size, accreted_mass))
+    np.savetxt('sim_output_q3.csv',sim_output,delimiter=',')
     
 
     #N_rho = 1000
     #L = 2 * Rmax
     #rho = make_map(sph, N=N_rho, L=L)
     
-    fig = plt.figure(figsize=(8, 20))
-    ax1 = fig.add_subplot(311)
-    ax2 = fig.add_subplot(312)
-    ax3 = fig.add_subplot(313)
-    ax1.plot(times, a_Jup)
-    ax2.plot(times, e_Jup)
-    ax3.plot(times, disk_size)
+    #fig = plt.figure(figsize=(8, 20))
+    #ax1 = fig.add_subplot(311)
+    #ax2 = fig.add_subplot(312)
+    #ax3 = fig.add_subplot(313)
+    #ax1.plot(times, a_Jup)
+    #ax2.plot(times, e_Jup)
+    #ax3.plot(times, disk_size)
 
-    for ax in [ax1, ax2, ax3]:
-        ax.set_xlabel('Time [yr]')
+    #for ax in [ax1, ax2, ax3]:
+    #    ax.set_xlabel('Time [yr]')
     
-    ax1.set_ylabel('a [au]')
-    ax2.set_ylabel('e')
-    ax3.set_ylabel('disk size [au]')
+    #ax1.set_ylabel('a [au]')
+    #ax2.set_ylabel('e')
+    #ax3.set_ylabel('disk size [au]')
 
-    plt.show()
+    #plt.show()
     
     #plt.imshow(numpy.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)),
     #              extent=[-L / 2, L / 2, -L / 2, L / 2], vmin=10, vmax=15)
