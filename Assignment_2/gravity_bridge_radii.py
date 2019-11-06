@@ -62,7 +62,7 @@ def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster):
         time_series.append(t.value_in(units.Myr))
         pos,coreradius,coredens=cluster.densitycentre_coreradius_coredens(converter)
         lr,mf=cluster.LagrangianRadii(converter) # outputs are radii, mass fractions
-	half_mass_radii.append(lr[5].value_in(units.parsec)) # 5th argument attributes to half-mass radius
+        half_mass_radii.append(lr[5].value_in(units.parsec)) # 5th argument attributes to half-mass radius
         core_radii.append(coreradius.value_in(units.parsec))
         combined_gravity.evolve_model(t, timestep=dt)
 

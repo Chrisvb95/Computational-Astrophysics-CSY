@@ -86,6 +86,7 @@ def Hill_radius(a, e, Sun_Jupiter):
     return a * (1-e) * ((Sun_Jupiter[1].mass / Sun_Jupiter[0].mass) / 3.) ** (1. / 3.)
 
 def hydro_sink_particles(sink, gas):
+
     removed_particles = Particles()
     xs, ys, zs = sink.x, sink.y, sink.z
     radius_squared = sink.radius**2
@@ -99,10 +100,9 @@ def hydro_sink_particles(sink, gas):
     sink.position = (cm+insink.center_of_mass()*insink.total_mass())/sink.mass
     sink.velocity = (p+insink.total_momentum())/sink.mass
     removed_particles.add_particles(insink)
-    #added_mass = insink.total_mass()
     gas.remove_particles(insink)
 
-    return removed_particles#, added_mass
+    return removed_particles
 
 
 def init_sun_jupiter():
@@ -126,31 +126,17 @@ def init_sun_jupiter():
 
 
 def init_sink_particle(m, r, position, velocity):
+
     sink = Particles(1)
-    sink.mass = 0. | units.MSun
+    sink.mass = 0. | units.MJupiter
     sink.radius = r
     sink.x, sink.y, sink.z = position
     sink.vx, sink.vy, sink.vz = velocity
+
     return sink
 
 def init_passing_star(pericenter, e, M):
-    
-    '''
-    Pstar = Particles(2)
-    sun = Pstar[0]
-    sun.mass = 1.0 | units.MSun
-    sun.radius = 1.0 | units.RSun
-    sun.position = (855251, -804836, -3186) |units.km
-    sun.velocity = (7.893, 11.894, 0.20642) |(units.m/units.s)
-
-    Pstar[1].mass = M
-    Pstar[1].radius = 1.0 | units.RSun
-    Pstar[1].position = (200, -200, 0) | units.AU
-    Pstar[1].eccentricity = e
-    Pstar[1].argument_of_pericenter = 200 | units.AU
-    ds = 400/100
-    Pstar[1].velocity = (0, ds, 0) | (units.AU/units.yr)    
-    '''
+  
     Pstar = Particles(1)
     Pstar.mass = M
     Pstar.radius = 1.0 | units.RSun
@@ -158,81 +144,46 @@ def init_passing_star(pericenter, e, M):
     Pstar.eccentricity = e
     Pstar.argument_of_pericenter = 200 | units.AU
     ds = 400/100
-    Pstar.velocity = (0, ds, 0) | (units.AU/units.yr)    
-
+    Pstar.velocity = (0, ds, 0) | (units.AU/units.yr)  
+  
     return Pstar
     
 def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic, dt_bridge, tend):
 
     Sun = Sun_Jupiter[0]
     Jupiter = Sun_Jupiter[1]
-    # Initialising the direct N-body integrator
-    #gravity_converter = nbody_system.nbody_to_si(Jupiter.mass, Jupiter.position.length())
-    #gravity_converter = nbody_system.nbody_to_si(1|units.MSun, 1|units.AU)
-    #gravity = ph4(gravity_converter)
-    #gravity.particles.add_particle(Jupiter)
-    #gravity.particles.add_particle(Pstar)
-    #gravity.timestep = dt_gravity
+
     
     # Initialising the SPH code
     sph_converter = nbody_system.nbody_to_si(1|units.MSun, 1|units.AU)    
-    #sph_converter = nbody_system.nbody_to_si(Pstar.mass.sum(), Rmin) 
     sph = Fi(sph_converter, mode="openmp")
     sph.gas_particles.add_particles(disk_gas)
-    print('Testing sun mass',Sun.mass)
     sph.dm_particles.add_particle(Sun)
     sph.dm_particles.add_particle(Jupiter)
     sph.dm_particles.add_particle(Pstar)
-    #sph.parameters.timestep = dt_sph
-
-    print 'Bridging...'
-    # Build up the bridge between gravity and hydrodynamics
-    #grav_sph = bridge.Bridge(use_threading=False)
-    #grav_sph.add_system(gravity, (sph,))
-    #grav_sph.add_system(sph, (gravity,))
-    #grav_sph.timestep = dt_bridge
-
+ 
     # Set up channels for updating the particles
-    
-    #gravity_to_Jupiter = gravity.particles.new_channel_to(Sun_Jupiter)
-        
     sph_to_disk = sph.gas_particles.new_channel_to(disk_gas)
     sph_to_Sun_Jupiter = sph.dm_particles.new_channel_to(Sun_Jupiter)
-    #sph_to_Jupiter = sph.dm_particles.new_channel_to(Jupiter)
     sph_to_Pstar = sph.dm_particles.new_channel_to(Pstar)
     
     Sun_Jupiter_to_sph = Sun_Jupiter.new_channel_to(sph.dm_particles)
-    #Jupiter_to_sph = Jupiter.new_channel_to(sph.dm_particles)    
     disk_to_sph = disk_gas.new_channel_to(sph.gas_particles)
     Pstar_to_sph = Pstar.new_channel_to(sph.dm_particles)
-    '''
-    gravity_to_Jupiter = gravity.particles.new_channel_to(Sun_Jupiter)
-    gravity_to_Pstar = gravity.particles.new_channel_to(Pstar)
-    sph_to_disk = sph.gas_particles.new_channel_to(disk_gas)
-    sph_to_Sun = sph.dm_particles.new_channel_to(Sun_Jupiter)
-    Jupiter_to_gravity = Sun_Jupiter.new_channel_to(gravity.particles)
-    Pstar_to_gravity = Pstar.new_channel_to(gravity.particles)    
-    disk_to_sph = disk_gas.new_channel_to(sph.gas_particles)
-    Sun_to_sph = Sun_Jupiter.new_channel_to(sph.dm_particles)
-    '''
-    # Sanity checks:
-    print('Sanity checks:')
-    #print('Star coordinates (AU)',Pstar.x.value_in(units.AU),
-    #                             Pstar.y.value_in(units.AU),
-    #                             Pstar.z.value_in(units.AU))
-    print('Disk particle map saved to: initial_check_disk.png')    
-    plot_map(sph, Sun_Jupiter, Pstar,'initial_check_disk.png',show=True)
-
+ 
+    # Preparing lists for data-recording
     a_Jup = []
     e_Jup = []
     disk_size = []
     accreted_mass = []
-    sink0_mass = 0 | units.MSun
-    # start evolotuion
+    accreted_mass.append((sink.mass).value_in(units.MJupiter)[0])
+    sink0_mass = 0 | units.MJupiter
+    
+    # Start evolution
     print 'Start evolving...'
     times = quantities.arange(0.|units.yr, tend, dt_diagnostic)
     for i,t in enumerate(times):
-	
+	    
         # Save the data for plots
         orbit = orbital_elements_from_binary(Sun_Jupiter, G=constants.G)
         a = orbit[2].value_in(units.AU)
@@ -241,12 +192,8 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
         a_Jup.append(a)
         e_Jup.append(e)
         disk_size.append(lr9)
-        accreted_mass.append((sink.mass).value_in(units.MJupiter)[0])
-
-	# Plotting
-	#print('Star coordinates (AU)',Pstar.x.value_in(units.AU),
-    #                             Pstar.y.value_in(units.AU),
-    #                             Pstar.z.value_in(units.AU))
+ 
+        # Plotting system        
         print 'Time = %.1f yr:'%t.value_in(units.yr), \
                   'a = %.2f au, e = %.2f,'%(a, e), \
                   'disk size = %.2f au'%lr9
@@ -255,25 +202,22 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
     
         # Evolve the bridge system for one step
         sph.evolve_model(t, dt_diagnostic)
-        #gravity_to_Jupiter.copy()
         sph_to_disk.copy()
         sph_to_Sun_Jupiter.copy()
         sph_to_Pstar.copy()
-        
-        # Add the 'sinked' mass to Jupiter & keep the sink particle along with Jupiter      
-        #removed_particles, added_mass = hydro_sink_particles(sink, disk_gas)        
-        removed_particles = hydro_sink_particles(sink, disk_gas)        
-        Jupiter.mass += sink.mass - sink0_mass# += added_mass
-        sink0_mass = sink.mass
+
+        # Calculating accreted mass in new position
         sink.position = Jupiter.position
-        sink.radius = Hill_radius(a, e, Sun_Jupiter) | units.AU
+        sink.radius = Hill_radius(a, e, Sun_Jupiter) | units.AU       
+        removed_particles = hydro_sink_particles(sink, disk_gas) 
+        Jupiter.mass += sink.mass - sink0_mass
+        accreted_mass.append((sink.mass).value_in(units.MJupiter)[0])            
+        sink0_mass = sink.mass.copy()
         Sun_Jupiter_to_sph.copy()
-        #sph.gas_particles -= removed_particles
         disk_to_sph.copy()
 
 	Sun_Jupiter_to_sph.copy()
 	Pstar_to_sph.copy()
-    #gravity.stop()
     sph.stop()
 
     return times, a_Jup, e_Jup, disk_size, accreted_mass
@@ -317,7 +261,7 @@ def init_body_solar_disk_planetary(Ndisk, Mdisk, Rmin, Rmax):
 if __name__ == "__main__":
     
     # Setting parameters
-    tend = 300. | units.yr
+    tend = 500. | units.yr
     dt_gravity = 0.1 | units.yr
     dt_sph = 0.01 |units.yr
     dt_diagnostic = 1.0 | units.yr

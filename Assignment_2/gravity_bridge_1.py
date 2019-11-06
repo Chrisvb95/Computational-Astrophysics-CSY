@@ -1,7 +1,6 @@
 import numpy as np
 import sys
 import pickle as pkl
-import time
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from amuse.units import units
@@ -26,8 +25,11 @@ def cluster_init(N,mMin,mMax,alpha,mCluster,rCluster):
     
     return cluster
 
-def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=False):
-    
+def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=False,dump_dir='data_dump'):
+
+    if dump:
+        print('Will be saving data in:'+dump_dir)    
+
     converter=nbody_system.nbody_to_si(mCluster,rCluster)
     # Splitting particle according to mass_cut
     low_mass_stars = cluster.select(lambda m: m < mCut,["mass"])
@@ -54,8 +56,6 @@ def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=False):
     # Making first snapshot    
     #plot_cluster(low_mass_stars,high_mass_stars,'t=0',save=True)    
 
-    start_time = time.time()
-
     # Evolving the model
     times = quantities.arange(0|units.Myr, tend, dt)
     mCut_str = str(mCut.value_in(units.MSun))
@@ -70,14 +70,11 @@ def evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=False):
         
         if dump:
             pkl.dump(low_mass_stars, 
-                     open('data_dump/t'+time+'_m'+mCut_str+'_low_mass.p',
+                     open(dump_dir+'/t'+time+'_m'+mCut_str+'_low_mass.p',
                      'wb'))
             pkl.dump(high_mass_stars, 
-                     open('data_dump/t'+time+'_m'+mCut_str+'_high_mass.p',
-                     'wb'))
-
-    elapsed_time = time.time()-start_time
-    print('Total runtime of simulation:',elapsed_time)    
+                     open(dump_dir+'/t'+time+'_m'+mCut_str+'_high_mass.p',
+                     'wb')) 
             
     code_tree.stop()
     code_direct.stop()    
@@ -118,7 +115,7 @@ def plot_cluster(low_mass, high_mass, title, save=False):
     
  
 if __name__ == "__main__":
-    
+    import time
     # Determining number of particles for which the code must be run
     if len(sys.argv) > 1:
         N = int(sys.argv[1])
@@ -137,10 +134,15 @@ if __name__ == "__main__":
     mCut = 0|units.MSun
     dt = 0.1 |units.Myr
     tend = 10 |units.Myr
+    
+    np.random.seed(1) #Ensuring that we use the same seed for every cluster init
+    cluster = cluster_init(N,mMin,mMax,alpha,mCluster,rCluster)  
 
-    cluster = cluster_init(N,mMin,mMax,alpha,mCluster,rCluster)
-    evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=True)    
-
+    start_time = time.time()
+    evolve_cluster(cluster,mCut,dt,tend,mCluster,rCluster,dump=True,dump_dir='data_dump')    
+    elapsed_time = time.time()-start_time
+    print('Total runtime of simulation:',elapsed_time) 
+    
     #plot_cluster(cluster)
 
     

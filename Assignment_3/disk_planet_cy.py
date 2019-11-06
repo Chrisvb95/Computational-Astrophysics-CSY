@@ -301,9 +301,13 @@ def main(t_end=1000.|units.yr, dt=10.|units.yr):
 if __name__ == "__main__":
     t_end = 100. | units.yr
     dt = 1. |units. yr
+    
     times, a_Jup, e_Jup, disk_size, accreted_mass = main(t_end, dt)
+
     t_a_e_ds_am = np.array(times + a_Jup + e_Jup + disk_size + accreted_mass)
+
     output_filename = 't_a_e_ds_am.txt'
+
     with open(output_filename, 'w'):
         np.savetxt(output_filename, t_a_e_ds_am.reshape(5, len(times)).transpose())
     print 'Saved the data of timestamp, semi-major-axis, eccentricity, disk size, and accreted mass in', output_filename

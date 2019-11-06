@@ -45,19 +45,16 @@ if __name__ == "__main__":
     N = 20000
     tend = 1. | units.yr
     Mstar = 1. | units.MSun
-    Mdisk = 1. | units.MSun
-    Rmin = 2
-    Rmax=100
 
-    convert = nbody_system.nbody_to_si(Mdisk, 1. | units.AU)
+    convert = nbody_system.nbody_to_si(Mstar, 1. | units.AU)
     proto = ProtoPlanetaryDisk(
-        N, convert_nbody=convert, densitypower=1.5, Rmin=Rmin, Rmax=Rmax, q_out=1.)
+        N, convert_nbody=convert, densitypower=1.5, Rmin=4, Rmax=20, q_out=1.)
     gas = proto.result
     gas.h_smooth = 0.06 | units.AU
-    
+
     sun = Particles(1)
     sun.mass = Mstar
-    sun.radius = 0.1 | units.AU
+    sun.radius = 2. | units.AU
     sun.x = 0. | units.AU
     sun.y = 0. | units.AU
     sun.z = 0. | units.AU
@@ -80,8 +77,8 @@ if __name__ == "__main__":
 
     sph.evolve_model(tend)
 
-    L = 200
-    rho = make_map(sph, N=1000, L=L)
+    L = 50
+    rho = make_map(sph, N=200, L=L)
     sph.stop()
     pyplot.figure(figsize=(8, 8))
     pyplot.imshow(numpy.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)),
