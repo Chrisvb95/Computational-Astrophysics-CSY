@@ -164,6 +164,8 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
         a_Jup.append(a)
         e_Jup.append(e)
         disk_size.append(lr9)
+        am = (sink.mass[0]).value_in(units.MJupiter)
+        accreted_mass.append(am)
        
         # Plotting system
         print 'Time = %.1f yr:'%model_time.value_in(units.yr), \
