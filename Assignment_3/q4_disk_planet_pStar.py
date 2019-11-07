@@ -15,7 +15,7 @@ from amuse.community.fi.interface import Fi
 from amuse.ext.protodisk import ProtoPlanetaryDisk
 from amuse.ext.orbital_elements import orbital_elements_from_binary
 
-def plot_map(sph, Sun_and_Jupiter, Pstar, title, N=100, L=1, show=True):
+def plot_map(sph, Sun_and_Jupiter, Pstar, title, N=200, L=1, show=True):
 
     print('Plotting', title)
 
@@ -42,20 +42,20 @@ def plot_map(sph, Sun_and_Jupiter, Pstar, title, N=100, L=1, show=True):
     Sz = Sun_and_Jupiter[0].z.value_in(units.AU)
     #Sr = Sun_and_Jupiter[0].radius.value_in(units.AU)
     Sr = 1    
-    sun = Circle((Sx,Sy),Sr,color='y')
+    sun = Circle((Sy,Sx),Sr,color='y')
 
     Jx = Sun_and_Jupiter[1].x.value_in(units.AU)
     Jy = Sun_and_Jupiter[1].y.value_in(units.AU)
     Jz = Sun_and_Jupiter[1].z.value_in(units.AU)
     #Jr = Sun_and_Jupiter[1].radius.value_in(units.AU)
     Jr = 0.5     
-    jup = Circle((Jx,Jy),Jr,color='orange')
+    jup = Circle((Jy,Jx),Jr,color='orange')
 
     Starx = Pstar.x.value_in(units.AU)
     Stary = Pstar.y.value_in(units.AU)
     Starz = Pstar.z.value_in(units.AU)
     Starr = 1.0
-    star = Circle((Starx,Stary),Starr,color='r')
+    star = Circle((Stary,Starx),Starr,color='r')
 
     rho, rhovx, rhovy, rhovz, rhoe = sph.get_hydro_state_at_point(
         x, y, z, vx, vy, vz)
@@ -63,13 +63,13 @@ def plot_map(sph, Sun_and_Jupiter, Pstar, title, N=100, L=1, show=True):
 
     fig,ax = plt.subplots(1,figsize=(8, 8))    
     ax.imshow(np.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)),
-                  extent=[-L / 2, L / 2, -L / 2, L / 2], vmin=10, vmax=15)
+                  extent=[-L / 2, L / 2, -L / 2, L / 2], vmin=10, vmax=15, origin='lower')
     ax.add_patch(sun)
     ax.add_patch(jup)
     ax.add_patch(star)
-    #plt.title(title)
+    plt.title(title)
     plt.xlabel('AU')
-    plt.savefig(title)
+    plt.savefig(title, dpi=200)
 
     if show:
         plt.show()
@@ -176,12 +176,12 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
     e_Jup = []
     disk_size = []
     accreted_mass = []
-    accreted_mass.append((sink.mass).value_in(units.MJupiter)[0])
+    #accreted_mass.append((sink.mass).value_in(units.MJupiter)[0])
     sink0_mass = 0 | units.MJupiter
     
     # Start evolution
     print 'Start evolving...'
-    times = quantities.arange(0.|units.yr, tend, dt_diagnostic)
+    times = quantities.arange(0.|units.yr, tend + dt_diagnostic, dt_diagnostic)
     for i,t in enumerate(times):
 	    
         # Save the data for plots
@@ -192,7 +192,8 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
         a_Jup.append(a)
         e_Jup.append(e)
         disk_size.append(lr9)
- 
+ 	
+	
         # Plotting system        
         print 'Time = %.1f yr:'%t.value_in(units.yr), \
                   'a = %.2f au, e = %.2f,'%(a, e), \
@@ -219,14 +220,14 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
 	Sun_Jupiter_to_sph.copy()
 	Pstar_to_sph.copy()
     sph.stop()
-
+    
     return times, a_Jup, e_Jup, disk_size, accreted_mass
 
 if __name__ == "__main__":
     
     # ------ Setting parameters ------
     # Simulation parameters
-    tend = 500. | units.yr
+    tend = 300. | units.yr
     dt_gravity = 0.1 | units.yr
     dt_sph = 0.01 |units.yr
     dt_diagnostic = 1.0 | units.yr
@@ -268,7 +269,7 @@ if __name__ == "__main__":
 
     # ------ Running the building and running hydro-code ------
     # Main function
-    t, a_Jup, e_Jup, disk_size, accreted_mass= evolve(Sun_Jupiter, 
+    t, a_Jup, e_Jup, disk_size, accreted_mass = evolve(Sun_Jupiter, 
 			disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic, dt_bridge,tend)
 
     # Saving the output
