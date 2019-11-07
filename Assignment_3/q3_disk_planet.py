@@ -148,7 +148,7 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
     disk_size = []
     accreted_mass = []
     accreted_mass.append((sink.mass).value_in(units.MJupiter)[0])
-    ink0_mass = 0 | units.MJupiter
+    sink0_mass = 0 | units.MJupiter
 
     # Start evolution
     print 'Start evolving...'
@@ -169,7 +169,7 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
         print 'Time = %.1f yr:'%model_time.value_in(units.yr), \
                   'a = %.2f au, e = %.2f,'%(a, e), \
                   'disk size = %.2f au'%lr9
-        plot_map(hydro,Sun_and_Jupiter,'distribution_plot_joined_code_new/{0}.png'.format(int(model_time.value_in(units.yr))),show=False)
+        plot_map(hydro,Sun_and_Jupiter,'q3_distribution_plot_4K/{0}.png'.format(int(model_time.value_in(units.yr))),show=False)
         
         # Evolve the bridge system for one step
         model_time += dt
@@ -178,10 +178,10 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
         channel_from_hydro.copy()
 
         # Calculating accreted mass in new position
+        Jupiter = gravity.particles[0]   
         sink.position = Jupiter.position
-        sink.radius = Hill_radius(a, e, Sun_Jupiter) | units.AU       
-        removed_particles = hydro_sink_particles(sink, disk_gas)
-        Jupiter = gravity.particles[0]        
+        sink.radius = Hill_radius(a, e, Sun_and_Jupiter) | units.AU       
+        removed_particles = hydro_sink_particles(sink, disk_gas)     
         Jupiter.mass += sink.mass - sink0_mass
         sink0_mass = sink.mass.copy()
         channel_to_grav.copy()
@@ -241,7 +241,7 @@ def main(t_end=1000.|units.yr, dt=10.|units.yr):
 
 
 if __name__ == "__main__":
-    t_end = 500. | units.yr
+    t_end = 1000. | units.yr
     dt = 1. |units. yr
     a_Jup, e_Jup, disk_size, times, accreted_mass = main(t_end, dt)
     
