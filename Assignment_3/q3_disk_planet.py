@@ -53,13 +53,13 @@ def plot_map(sph, Sun_and_Jupiter, title, N=100, L=1, show=True):
     rho = rho.reshape((N + 1, N + 1))
 
     fig,ax = plt.subplots(1,figsize=(8, 8))    
-    ax.imshow(np.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)),
+    ax.imshow(np.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)).transpose(),
                   extent=[-L / 2, L / 2, -L / 2, L / 2], vmin=10, vmax=15,origin='lower')
     ax.add_patch(sun)
     ax.add_patch(jup)
-    plt.title(title)
+    plt.title(title+' yr', fontsize=15, weight='bold', pad=10)
     plt.xlabel('AU')
-    plt.savefig(title)
+    plt.savefig('q3_distribution_plot_4K/'+title+'.png', dpi=150)
 
     if show:
         plt.show()
@@ -169,7 +169,7 @@ def gravity_hydro_bridge(gravity, hydro, sink, local_particles, Rmin, t_end=1000
         print 'Time = %.1f yr:'%model_time.value_in(units.yr), \
                   'a = %.2f au, e = %.2f,'%(a, e), \
                   'disk size = %.2f au'%lr9
-        plot_map(hydro,Sun_and_Jupiter,'q3_distribution_plot_4K/{0}.png'.format(int(model_time.value_in(units.yr))),show=False)
+        plot_map(hydro,Sun_and_Jupiter,'{0}'.format(int(model_time.value_in(units.yr))),show=False)
         
         # Evolve the bridge system for one step
         model_time += dt
@@ -241,7 +241,7 @@ def main(t_end=1000.|units.yr, dt=10.|units.yr):
 
 
 if __name__ == "__main__":
-    t_end = 1000. | units.yr
+    t_end = 500. | units.yr
     dt = 1. |units. yr
     a_Jup, e_Jup, disk_size, times, accreted_mass = main(t_end, dt)
     
