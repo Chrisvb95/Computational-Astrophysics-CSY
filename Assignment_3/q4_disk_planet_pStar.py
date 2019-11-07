@@ -42,34 +42,34 @@ def plot_map(sph, Sun_and_Jupiter, Pstar, title, N=200, L=1, show=True):
     Sz = Sun_and_Jupiter[0].z.value_in(units.AU)
     #Sr = Sun_and_Jupiter[0].radius.value_in(units.AU)
     Sr = 1    
-    sun = Circle((Sy,Sx),Sr,color='y')
+    sun = Circle((Sx,Sy),Sr,color='y')
 
     Jx = Sun_and_Jupiter[1].x.value_in(units.AU)
     Jy = Sun_and_Jupiter[1].y.value_in(units.AU)
     Jz = Sun_and_Jupiter[1].z.value_in(units.AU)
     #Jr = Sun_and_Jupiter[1].radius.value_in(units.AU)
     Jr = 0.5     
-    jup = Circle((Jy,Jx),Jr,color='orange')
+    jup = Circle((Jx,Jy),Jr,color='orange')
 
     Starx = Pstar.x.value_in(units.AU)
     Stary = Pstar.y.value_in(units.AU)
     Starz = Pstar.z.value_in(units.AU)
     Starr = 1.0
-    star = Circle((Stary,Starx),Starr,color='r')
+    star = Circle((Starx,Stary),Starr,color='r')
 
     rho, rhovx, rhovy, rhovz, rhoe = sph.get_hydro_state_at_point(
         x, y, z, vx, vy, vz)
     rho = rho.reshape((N + 1, N + 1))
 
     fig,ax = plt.subplots(1,figsize=(8, 8))    
-    ax.imshow(np.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)),
+    ax.imshow(np.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)).transpose(),
                   extent=[-L / 2, L / 2, -L / 2, L / 2], vmin=10, vmax=15, origin='lower')
     ax.add_patch(sun)
     ax.add_patch(jup)
     ax.add_patch(star)
-    plt.title(title)
+    plt.title(title+' yr', fontsize=15, weight='bold', pad=10)
     plt.xlabel('AU')
-    plt.savefig(title, dpi=200)
+    plt.savefig('distribution_plot_passing_star_full_hydro_4k/'+title+'.png', dpi=200)
 
     if show:
         plt.show()
@@ -199,7 +199,7 @@ def evolve(Sun_Jupiter, disk_gas, sink, Pstar, dt_gravity, dt_sph, dt_diagnostic
                   'a = %.2f au, e = %.2f,'%(a, e), \
                   'disk size = %.2f au'%lr9
         plot_map(sph, Sun_Jupiter, Pstar, 
-		'distribution_plot_passing_star_full_hydro_4k/{0}.png'.format(int(t.value_in(units.yr))),show=False)
+		'{0}'.format(int(t.value_in(units.yr))),show=False)
     
         # Evolve the bridge system for one step
         sph.evolve_model(t, dt_diagnostic)
@@ -227,7 +227,7 @@ if __name__ == "__main__":
     
     # ------ Setting parameters ------
     # Simulation parameters
-    tend = 300. | units.yr
+    tend = 500. | units.yr
     dt_gravity = 0.1 | units.yr
     dt_sph = 0.01 |units.yr
     dt_diagnostic = 1.0 | units.yr
@@ -274,7 +274,7 @@ if __name__ == "__main__":
 
     # Saving the output
     sim_output = np.column_stack((t.value_in(units.yr), a_Jup, e_Jup, disk_size, accreted_mass))
-    np.savetxt('sim_output.csv',sim_output,delimiter=',')
+    np.savetxt('q4_sim_output.csv',sim_output,delimiter=',')
 
 
 
