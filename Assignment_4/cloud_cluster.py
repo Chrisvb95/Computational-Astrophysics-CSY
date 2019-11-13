@@ -48,32 +48,38 @@ def plot_cloud_cluster(cloud,cluster,N=200):
     
 
 
-def cluster_init(N,m,hmr,v,init_position,alpha=-2.35):
-    # Initialises a star cluster that follows a powerlaw mass distrib.
-    converter = nbody_system.nbody_to_si(m,hmr)
+def cluster_init(N,Mtot,Rvir,v,init_position,alpha=-2.35):
+    '''Initialises a star cluster that follows a powerlaw mass distribution.
+       `N` is the number of star members, `Mtot` is the total mass of the cluster,
+       and `Rvir` is the virial radius of the model.'''
+    converter = nbody_system.nbody_to_si(Mtot,Rvir)
     cluster = new_plummer_model(N,convert_nbody=converter)
-    mZAMS = new_powerlaw_mass_distribution(N,m*0.3,m*80,alpha)
+    m_average = Mtot/N
+    # new_powerlaw_mass_distribution(N, Mmin, Mmax, alpha), alpha is the powerlaw index
+    mZAMS = new_powerlaw_mass_distribution(N,m_average*0.3,m_average*80,alpha)
     cluster.mass = mZAMS
     cluster.scale_to_standard(converter)
     cluster.vy += v
     cluster.position += init_position
-    return cluster
+    return cluster, converter
 
-def cloud_init(N,m,hmr):
-    # Initialises the cloud
-    converter = nbody_system.nbody_to_si(m,hmr)
+
+def cloud_init(N,Mtot,Rvir):
+    '''Initialises the cloud'''
+    converter = nbody_system.nbody_to_si(Mtot,Rvir)
     cloud = new_plummer_model(N,convert_nbody=converter)
-    return cloud
+    return cloud, converter
 
-def evolve(cluster,cloud,dt_bridge):
+
+def evolve(cluster,cloud, converter_grav,converter_hydro, t_end,dt_bridge):
     converter = nbody_system.nbody_to_si(1|units.MSun,1|units.parsec)
 
     # Initialising the direct N-body integrator
-    gravity = ph4(converter)
+    gravity = ph4(converter_grav)
     gravity.particles.add_particles(cluster)
 
     # Initialising the hydro code
-    hydro = Fi(converter, mode="openmp")
+    hydro = Fi(converter_hydro, mode="openmp")
     hydro.gas_particles.add_particles(cloud)
 
     # Build a bridge between hydro and grav
@@ -87,7 +93,8 @@ def evolve(cluster,cloud,dt_bridge):
     channel_from_hydro = hydro.gas_particles.new_channel_to(cloud)
     
     # Start evolution
-    while model <= t_end:
+    model_time = 0.|units.yr
+    while model_time <= t_end:
 
         # Evolve for one step        
         model_time += dt
@@ -106,28 +113,33 @@ if __name__ == "__main__":
     # Set initial parameters
     # Cluster
     N_cluster = 1000
-    m_cluster = N_cluster | units.MSun
-    hmr_cluster = 5 | units.parsec   
-    v_cluster = 100 | units.km/units.s
+    Mtot_cluster = N_cluster | units.MSun
+    Rvir_cluster = 5. | units.parsec   
+    v_cluster = 100. | units.km/units.s
     init_position_cluster = (100,-100,0)|units.parsec
-    # Cloud    
+
+    # Cloud
     N_cloud = 2000
-    m_cloud = 100 | units.MSun
-    hmr_cloud = 20 | units.parsec
+    Mtot_cloud = 100. | units.MSun
+    Rvir_cloud = 20. | units.parsec
 
     # Initialising the two systems
-    cluster = cluster_init(N_cluster,m_cluster,hmr_cluster,v_cluster,init_position_cluster)
-    cloud = cloud_init(N_cloud,m_cloud,hmr_cloud)
+    np.random.seed(0)
+    cluster, converter_cluster = cluster_init(N_cluster,Mtot_cluster,Rvir_cluster,v_cluster,init_position_cluster)
+    cloud, converter_cloud = cloud_init(N_cloud,Mtot_cloud,Rvir_cloud)
 
+    t_end = 1. | units.Myr #??
+    dt_bridge = 10. | units.yr #??
+    #evolve(cluster,cloud, converter_cluster,converter_cloud, t_end,dt_bridge)
     # Initialising the hydro code
     #converter = nbody_system.nbody_to_si(1|units.MSun,1|units.parsec)
     #hydro = Fi(converter, mode="openmp")
     #hydro.gas_particles.add_particles(cloud)
     #hydro.stop()
     #print('CLUSTER')
-    #print(cluster)
+    print(cluster)
     #print('CLOUD')
-    #print(cloud)
+    print(cloud)
 
     plot_cloud_cluster(cloud,cluster)
 
