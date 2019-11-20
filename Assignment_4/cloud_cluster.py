@@ -48,7 +48,7 @@ def make_map(sph, L=200):
 
     return rho
 
-def plot_cloud_cluster(cluster, sph, title, vrange=[0,5], L=400):
+def plot_cloud_cluster(cluster, sph, title, vrange=[0,2], L=400):
 
     rho = make_map(sph, L)
     #rhomin = int(np.log10(rho.value_in(units.amu/units.cm**3)).min())
@@ -56,9 +56,12 @@ def plot_cloud_cluster(cluster, sph, title, vrange=[0,5], L=400):
 
     fig,ax = plt.subplots(1,figsize=(8,8))
     vmin, vmax = vrange   
-    cax = ax.imshow(np.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)).transpose(),
-                    extent=[-L/2, L/2, -L/2, L/2], vmin=vmin, vmax=vmax, cmap='jet')
+    #cax = ax.imshow(np.log10(1.e-5 + rho.value_in(units.amu / units.cm**3)).transpose(),
+    #                extent=[-L/2, L/2, -L/2, L/2], vmin=vmin, vmax=vmax, cmap='jet')
     
+    cax = ax.imshow((rho.value_in(units.amu / units.cm**3)).transpose(),
+                    extent=[-L/2, L/2, -L/2, L/2], vmin=vmin, vmax=vmax, cmap='jet')
+
     ax.scatter(cluster.x.value_in(units.parsec), cluster.y.value_in(units.parsec), s=5, c='C3')   
 
     #ticks = np.arange(rhomin, rhomax+1, 1, dtype=int)
@@ -73,9 +76,8 @@ def plot_cloud_cluster(cluster, sph, title, vrange=[0,5], L=400):
     ax.set_ylabel('y [pc]')
     ax.set_title(title+' Myr', weight='bold')
     plt.savefig('cloud_cluster/'+title+'.png', dpi=200)
-    #plt.close()
 
-    #plt.show()
+    plt.close()
 
     return None
     
@@ -150,7 +152,7 @@ def evolve(cluster,cloud, converter_grav,converter_hydro, t_end, dt_bridge, dt_d
     for i,t in enumerate(times):
       
         print t.in_(units.Myr)
-	grav_sph.evolve_model(t, dt_diag)        
+	sph.evolve_model(t, dt_diag)        
 	channel_from_grav_to_cluster.copy()
         channel_from_sph_to_cloud.copy()
         plot_cloud_cluster(cluster, sph, title='{0}'.format(float(t.value_in(units.Myr))),\
@@ -168,8 +170,8 @@ if __name__ == "__main__":
     print 'Initializing the star cluster and the molecular cloud...'
     # Molecular cloud (typically, mass = 1e3-1e7 MSun, diameter = 5-200 pc ?)
     N_cloud = 4000
-    M_cloud = 1e4 | units.MSun
-    R_cloud = 20 | units.parsec
+    M_cloud = 1e5 | units.MSun
+    R_cloud = 100 | units.parsec
 
     # Cluster (typically, number of stars = 1e5-1e6, diameter = 3-100 pc ?)
     N_cluster = 1000
@@ -178,7 +180,7 @@ if __name__ == "__main__":
     # iniial velocity and position of the cluster's COM
     v_cluster = (0,0,0) | units.km/units.s
     #p_cluster = (-(R_cloud*2+Rvir_cluster*5).value_in(units.parsec),0,0)|units.parsec
-    p_cluster = (-10, -10, 0) | units.parsec
+    p_cluster = (-100, -100, 0) | units.parsec
 
     # Setting a seed
     np.random.seed(1)
