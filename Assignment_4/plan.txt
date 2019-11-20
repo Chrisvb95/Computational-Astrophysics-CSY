@@ -1,0 +1,19 @@
+
+
+
+--- Experimental set-up --- 
+- Refactor code
+- Change to gasplummer model 
+- Change position plot to scatter
+- Determine physical diagnostics
+    - Radius size
+    - Energie 
+    - Density (rho) 
+    - Pressure 
+- Run simulation with single massive star in the cloud 
+- Implementing stopping condition and (maybe) implement the sink 
+
+--- Carry out experiment ---
+- Run simulation for different parameters
+- Analyse results
+- Write paper 
