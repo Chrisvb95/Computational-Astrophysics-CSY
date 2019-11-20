@@ -81,13 +81,12 @@ def plot_cloud_cluster(cluster, sph, title, vrange=[0,5], L=400):
     
 
 
-def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35, seed=0):
+def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35):
     '''Initialises a star cluster that follows a powerlaw mass distribution.
        `N` is the number of star members, `Mtot` is the total mass of the cluster,
        and `Rvir` is the virial radius of the model.'''
     converter = nbody_system.nbody_to_si(Mtot,Rvir)
 
-    np.random.seed(seed)
     cluster = new_plummer_model(N,convert_nbody=converter)
     m_average = Mtot/N
 
@@ -100,27 +99,39 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35, seed=0):
     return cluster, converter
 
 
-def cloud_init(N=100, M=100.|units.MSun, R=1.|units.parsec, seed=0):
+def cloud_init(N=100, M=100.|units.MSun, R=1.|units.parsec):
     '''Initialises the cloud'''
     converter = nbody_system.nbody_to_si(M,R)
-    #cloud = molecular_cloud(targetN=N, convert_nbody=converter,\
-    #                        base_grid=body_centered_grid_unit_cube,\
-    #                        seed=seed).result
-    cloud = new_plummer_model(N, convert_nbody=converter)
+    cloud = molecular_cloud(targetN=N, convert_nbody=converter,\
+                            base_grid=body_centered_grid_unit_cube,\
+                            ).result
+    #cloud = new_plummer_model(N, convert_nbody=converter)
     return cloud, converter
 
 
 def evolve(cluster,cloud, converter_grav,converter_hydro, t_end, dt_bridge, dt_diag):
 
-
+    converter = nbody_system.nbody_to_si(1. | units.MSun,1. | units.parsec)
     # Initialising the direct N-body integrator
     print 'Setting up the gravity code and the hydro code...'
-    gravity = ph4(converter_cluster)
+    gravity = ph4(converter)
     gravity.particles.add_particles(cluster)
 
     # Initialising the hydro code
-    sph = Fi(converter_cloud, mode="openmp")
+    sph = Fi(converter, mode="openmp")
     sph.gas_particles.add_particles(cloud)
+    sph.parameters.use_hydro_flag = True
+    sph.parameters.radiation_flag = False
+    sph.parameters.gamma = 1
+    sph.parameters.isothermal_flag = True
+    sph.parameters.integrate_entropy_flag = False
+    sph.parameters.timestep = dt_diag
+    sph.parameters.verbosity = 0
+    sph.parameters.eps_is_h_flag = False    # h_smooth is constant
+    eps = 0.1 | units.parsec
+    sph.parameters.gas_epsilon = eps
+    sph.parameters.sph_h_const = eps
+    cloud.h_smooth= eps
 
     # Building a bridge between hydro and grav
     print 'Bridging...'
@@ -139,13 +150,11 @@ def evolve(cluster,cloud, converter_grav,converter_hydro, t_end, dt_bridge, dt_d
     for i,t in enumerate(times):
       
         print t.in_(units.Myr)
-        #gravity.evolve_model(t, dt=dt_grav)
-        #sph.evolve_model(t, dt=dt_sph)
 	grav_sph.evolve_model(t, dt_diag)        
 	channel_from_grav_to_cluster.copy()
         channel_from_sph_to_cloud.copy()
         plot_cloud_cluster(cluster, sph, title='{0}'.format(float(t.value_in(units.Myr))),\
-                           L=160, vrange=[0,5])
+                           L=400, vrange=[0,5])
 
     gravity.stop()
     sph.stop()
@@ -158,7 +167,7 @@ if __name__ == "__main__":
     # Set initial parameters
     print 'Initializing the star cluster and the molecular cloud...'
     # Molecular cloud (typically, mass = 1e3-1e7 MSun, diameter = 5-200 pc ?)
-    N_cloud = 2000
+    N_cloud = 4000
     M_cloud = 1e4 | units.MSun
     R_cloud = 20 | units.parsec
 
@@ -169,17 +178,19 @@ if __name__ == "__main__":
     # iniial velocity and position of the cluster's COM
     v_cluster = (0,0,0) | units.km/units.s
     #p_cluster = (-(R_cloud*2+Rvir_cluster*5).value_in(units.parsec),0,0)|units.parsec
-    p_cluster = (-100,-100, 0) | units.parsec
+    p_cluster = (-10, -10, 0) | units.parsec
+
+    # Setting a seed
+    np.random.seed(1)
 
     # Initialising the two systems
-    seed = 50
     cluster, converter_cluster = cluster_init(N_cluster, Mtot_cluster, Rvir_cluster,\
-                                              v_cluster, p_cluster, seed=seed)
-    cloud, converter_cloud = cloud_init(N_cloud, M_cloud, R_cloud, seed=seed)
+                                              v_cluster, p_cluster)
+    cloud, converter_cloud = cloud_init(N_cloud, M_cloud, R_cloud)
 
-    t_end = 10. | units.Myr #??
-    dt_bridge = 0.1 | units.Myr
-    dt_diag = 0.1 | units.Myr
+    t_end = 100 | units.Myr
+    dt_bridge = 1. | units.Myr
+    dt_diag = 1. | units.Myr
 
     evolve(cluster,cloud, converter_cluster,converter_cloud, t_end,dt_bridge, dt_diag)
 
