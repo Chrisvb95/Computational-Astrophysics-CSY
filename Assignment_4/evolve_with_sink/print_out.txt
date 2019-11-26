@@ -1,0 +1,130 @@
+START RUNNING
+Initializing the star cluster and the molecular cloud...
+Setting up the gravity code and the hydro code...
+Bridging...
+star formation is considered
+Start evolving the molecular cloud...
+0.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+1.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+2.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+3.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+4.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+5.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+6.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+7.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+8.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+9.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+10.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+11.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+12.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+13.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+14.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+15.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+16.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+17.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+18.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+19.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+20.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+21.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+22.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+23.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+24.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+25.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+26.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+27.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+28.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+29.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+30.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+31.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+32.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+33.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+34.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+35.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+36.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+37.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+38.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+39.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+40.0 Myr
+(no high density particle has been identified in this step)
+(no merge happens in this step)
+END RUNNING
