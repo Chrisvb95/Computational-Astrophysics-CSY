@@ -316,17 +316,17 @@ if __name__ == '__main__':
     with open('print_out.txt', 'a') as pf:
         pf.write('Initializing the star cluster and the molecular cloud...\n')
     # Molecular cloud (typically, mass = 1e3-1e7 MSun, diameter = 5-200 pc ?)
-    N_cloud = 1000
-    Mtot_cloud = 1e4 | units.MSun
-    Rvir_cloud = 10 | units.parsec
+    N_cloud = 5000
+    Mtot_cloud = 5e4 | units.MSun
+    Rvir_cloud = 20 | units.parsec
 
     # Cluster (typically, number of stars = 1e5-1e6, diameter = 3-100 pc ?)
     N_cluster = 100
     Mtot_cluster = 1e3 | units.MSun
     Rvir_cluster = 5. | units.parsec
     # initial velocity and position of the cluster's COM
-    v_cluster = (10,10,0) | units.km/units.s
-    p_cluster = (-20,-20,0) | units.parsec
+    v_cluster = (2,2,0) | units.km/units.s
+    p_cluster = (-40,-40,0) | units.parsec
 
     # Setting a seed
     np.random.seed(1)
