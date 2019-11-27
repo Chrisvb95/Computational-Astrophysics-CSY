@@ -1,0 +1,46 @@
+START RUNNING
+Initializing the star cluster and the molecular cloud...
+Setting up the gravity code and the hydro code...
+Start evolving the molecular cloud...
+0.0 Myr
+1.0 Myr
+2.0 Myr
+3.0 Myr
+4.0 Myr
+5.0 Myr
+6.0 Myr
+7.0 Myr
+8.0 Myr
+9.0 Myr
+10.0 Myr
+11.0 Myr
+12.0 Myr
+13.0 Myr
+14.0 Myr
+15.0 Myr
+16.0 Myr
+17.0 Myr
+18.0 Myr
+19.0 Myr
+20.0 Myr
+21.0 Myr
+22.0 Myr
+23.0 Myr
+24.0 Myr
+25.0 Myr
+26.0 Myr
+27.0 Myr
+28.0 Myr
+29.0 Myr
+30.0 Myr
+31.0 Myr
+32.0 Myr
+33.0 Myr
+34.0 Myr
+35.0 Myr
+36.0 Myr
+37.0 Myr
+38.0 Myr
+39.0 Myr
+40.0 Myr
+END RUNNING
