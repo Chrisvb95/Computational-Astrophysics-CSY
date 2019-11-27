@@ -90,8 +90,8 @@ def plot_cloud_cluster(cluster, sph, title, vrange=[-6,2]):
     ax.set_ylabel('y [pc]')
     ax.set_title(title+' Myr', weight='bold')
     ax.legend(fontsize=14)
-    ax.set_ylim(-500,500)
-    ax.set_xlim(-500,500)
+    ax.set_ylim(-400,400)
+    ax.set_xlim(-400,400)
     plt.savefig(title+'.png', dpi=200)
 
     plt.close()
@@ -100,10 +100,12 @@ def plot_cloud_cluster(cluster, sph, title, vrange=[-6,2]):
     
 
 def Lagrang_radii(model, converter):
-    ''' Returns the 0.2, 0.5 and 0.9 Lagrangia radii'''      
-    lr,mr = model.LagrangianRadii(converter)
-    return np.take(lr.value_in(units.parsec),[4,5,7])
-
+    ''' Returns the 0.2, 0.5 and 0.9 Lagrangia radii'''
+    if len(model):    
+        lr,mr = model.LagrangianRadii(converter)
+        return np.take(lr.value_in(units.parsec),[4,5,7])
+    else:
+        return 0,0,0
 
 def Jeans_density(M, m=2*1.66e-24|units.g, T=15|units.K):
     rho_J = 81*constants.kB**3 / (32*np.pi*constants.G**3) * T**3 / (m**3 * M**2)
@@ -128,9 +130,10 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35):
     m_average = Mtot/N
 
     # new_powerlaw_mass_distribution(N, Mmin, Mmax, alpha), alpha is the powerlaw index
-    mZAMS = new_powerlaw_mass_distribution(N,m_average*0.3, m_average*80, alpha)
-    cluster.mass = mZAMS
-    cluster.scale_to_standard(converter)
+    if N != 1:
+    	mZAMS = new_powerlaw_mass_distribution(N,m_average*0.3, m_average*80, alpha)
+    	cluster.mass = mZAMS
+    	cluster.scale_to_standard(converter)
     cluster.velocity += init_v
     cluster.position += init_position
     return cluster, converter
@@ -154,12 +157,13 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
         pf.write('Setting up the gravity code and the hydro code...\n')
     converter = nbody_system.nbody_to_si(1. | units.MSun, 1. | units.parsec)
     # Initialising the direct N-body integrator
-    gravity = ph4(converter)
-    gravity.particles.add_particles(cluster)
+    #gravity = ph4(converter)
+    #gravity.particles.add_particles(cluster)
 
     # Initialising the hydro code
     sph = Fi(converter, mode="openmp")
     sph.gas_particles.add_particles(cloud)
+    sph.dm_particles.add_particles(cluster)
     #sph.parameters.use_hydro_flag = True
     sph.parameters.radiation_flag = False
     #sph.parameters.isothermal_flag = True
@@ -180,13 +184,14 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
     # Building a bridge between hydro and grav
     with open('print_out.txt', 'a') as pf:
         pf.write('Bridging...\n')
-    grav_sph = bridge.Bridge(use_threading=False)
-    grav_sph.add_system(gravity, (sph,))
-    grav_sph.add_system(sph, (gravity,))
-    grav_sph.timestep = dt_bridge
+    #grav_sph = bridge.Bridge(use_threading=False)
+    #grav_sph.add_system(gravity, (sph,))
+    #grav_sph.add_system(sph, (gravity,))
+    #grav_sph.timestep = dt_bridge
 
     # Setting up channels from code to cloud and cluster
-    channel_from_grav_to_cluster = gravity.particles.new_channel_to(cluster)
+    #channel_from_grav_to_cluster = gravity.particles.new_channel_to(cluster)
+    channel_from_sph_to_cluster = sph.dm_particles.new_channel_to(cluster)
     channel_from_sph_to_cloud = sph.gas_particles.new_channel_to(cloud)
 
     if sink == True:
@@ -205,9 +210,9 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
 
     # Initializing 90 percent lagrangian radius 
     lr_cloud = []
-    lr_cloud.append(Lagrang_radii(cloud, converter_sph))
+#    lr_cloud.append(Lagrang_radii(cloud, converter))
     lr_cluster = []
-    lr_cluster.append(Lagrang_radii(cluster, converter_grav))
+#    lr_cluster.append(Lagrang_radii(cluster, converter))
 
     # Evolving
     with open('print_out.txt', 'a') as pf:
@@ -223,10 +228,10 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
             # make sure at this time 'stars' and 'sph.gas_particles' are the same
             resolve_sinks(sph, stars, cloud, density_threshold, t)
 
-        grav_sph.evolve_model(t, timestep=dt_bridge)
-        channel_from_grav_to_cluster.copy()
+        sph.evolve_model(t, timestep=dt_bridge)
+        #channel_from_grav_to_cluster.copy()
         channel_from_sph_to_cloud.copy()
-
+        channel_from_sph_to_cluster.copy()
         #if sink == True:
         #    merge_stars(sph, stars, merge_radius)
 
@@ -235,13 +240,9 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
                            vrange=[-5,3])
 
         # save data (energy will be added afterwards)
-        lr_cloud.append(Lagrang_radii(cloud, converter_sph))
-        lr_cluster.append(Lagrang_radii(cluster, converter_grav))
-        #print("cloud:", sph.gas_particles)
-	#xx  
-        #plt.scatter(np.log10(sph.gas_particles.density.value_in(units.g/units.cm**3)),
-	#		 sph.gas_particles.pressure.value_in(units.kg/units.m/units.s**2), s=10)
-        #plt.show()
+#        lr_cloud.append(Lagrang_radii(cloud, converter))
+#        lr_cluster.append(Lagrang_radii(cluster, converter))
+
 
     gravity.stop()
     sph.stop()
@@ -343,12 +344,12 @@ if __name__ == '__main__':
     Rvir_cloud = 20 | units.parsec
 
     # Cluster (typically, number of stars = 1e5-1e6, diameter = 3-100 pc ?)
-    N_cluster = 1000
-    Mtot_cluster = 5. | units.MSun * N_cluster
+    N_cluster = 1
+    Mtot_cluster = 5000. | units.MSun * N_cluster
     Rvir_cluster = 5. | units.parsec
     # initial velocity and position of the cluster's COM
-    v_cluster = (2,2,0) | units.km/units.s
-    p_cluster = (-100,-100,0) | units.parsec
+    v_cluster = (0,0,0) | units.km/units.s
+    p_cluster = (10,0,0) | units.parsec
 
     # Setting a seed
     np.random.seed(1)
