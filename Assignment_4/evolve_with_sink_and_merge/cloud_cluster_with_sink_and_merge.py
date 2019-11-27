@@ -90,6 +90,8 @@ def plot_cloud_cluster(cluster, sph, title, vrange=[-6,2]):
     ax.set_ylabel('y [pc]')
     ax.set_title(title+' Myr', weight='bold')
     ax.legend(fontsize=14)
+    ax.set_ylim(-500,500)
+    ax.set_xlim(-500,500)
     plt.savefig(title+'.png', dpi=200)
 
     plt.close()
@@ -97,9 +99,10 @@ def plot_cloud_cluster(cluster, sph, title, vrange=[-6,2]):
     return None
     
 
-def L9_radius(model, converter):      
+def Lagrang_radii(model, converter):
+    ''' Returns the 0.2, 0.5 and 0.9 Lagrangia radii'''      
     lr,mr = model.LagrangianRadii(converter)
-    return lr[7].value_in(units.parsec)
+    return np.take(lr.value_in(units.parsec),[4,5,7])
 
 
 def Jeans_density(M, m=2*1.66e-24|units.g, T=15|units.K):
@@ -149,13 +152,13 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
 
     with open('print_out.txt', 'a') as pf:
         pf.write('Setting up the gravity code and the hydro code...\n')
-    #converter = nbody_system.nbody_to_si(1. | units.MSun, 1. | units.parsec)
+    converter = nbody_system.nbody_to_si(1. | units.MSun, 1. | units.parsec)
     # Initialising the direct N-body integrator
-    gravity = ph4(converter_grav)
+    gravity = ph4(converter)
     gravity.particles.add_particles(cluster)
 
     # Initialising the hydro code
-    sph = Fi(converter_sph, mode="openmp")
+    sph = Fi(converter, mode="openmp")
     sph.gas_particles.add_particles(cloud)
     #sph.parameters.use_hydro_flag = True
     sph.parameters.radiation_flag = False
@@ -201,8 +204,10 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
         merge_radius = 5e-2 | units.parsec  # 1 pc = 206265 AU
 
     # Initializing 90 percent lagrangian radius 
-    lr9 = []
-    lr9.append(L9_radius(cloud, converter_sph))
+    lr_cloud = []
+    lr_cloud.append(Lagrang_radii(cloud, converter_sph))
+    lr_cluster = []
+    lr_cluster.append(Lagrang_radii(cluster, converter_grav))
 
     # Evolving
     with open('print_out.txt', 'a') as pf:
@@ -222,15 +227,16 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
         channel_from_grav_to_cluster.copy()
         channel_from_sph_to_cloud.copy()
 
-        if sink == True:
-            merge_stars(sph, stars, merge_radius)
+        #if sink == True:
+        #    merge_stars(sph, stars, merge_radius)
 
         #  make plots
         plot_cloud_cluster(cluster, sph, title='{0}'.format(float(t.value_in(units.Myr))),\
                            vrange=[-5,3])
 
         # save data (energy will be added afterwards)
-        lr9.append(L9_radius(cloud, converter_sph))
+        lr_cloud.append(Lagrang_radii(cloud, converter_sph))
+        lr_cluster.append(Lagrang_radii(cluster, converter_grav))
         #print("cloud:", sph.gas_particles)
 	#xx  
         #plt.scatter(np.log10(sph.gas_particles.density.value_in(units.g/units.cm**3)),
@@ -240,7 +246,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_bridge, dt_dia
     gravity.stop()
     sph.stop()
 
-    return lr9
+    return lr_cloud,lr_cluster
 
 
 def resolve_sinks(sph, stars, cloud, density_thr, model_time):
@@ -275,7 +281,7 @@ def resolve_sinks(sph, stars, cloud, density_thr, model_time):
         stars.add_particles(newstars)
         with open('print_out.txt','a') as pf:
             pf.write('afterwards N: %d in stars, %d in sph.dm_particles;\n'%(len(stars), len(sph.dm_particles)))
-
+            pf.write(f'{newstars}')
 
 def merge_stars(sph, stars, merge_radius):
     if len(stars) <= 0 or stars.radius.max() <= (0.|units.AU):
@@ -332,17 +338,17 @@ if __name__ == '__main__':
     with open('print_out.txt', 'a') as pf:
         pf.write('Initializing the star cluster and the molecular cloud...\n')
     # Molecular cloud (typically, mass = 1e3-1e7 MSun, diameter = 5-200 pc ?)
-    N_cloud = int(1e4)
-    Mtot_cloud = 3e4 | units.MSun
-    Rvir_cloud = 5 | units.parsec
+    N_cloud = 10000
+    Mtot_cloud = 1 | units.MSun * N_cloud
+    Rvir_cloud = 20 | units.parsec
 
     # Cluster (typically, number of stars = 1e5-1e6, diameter = 3-100 pc ?)
-    N_cluster = 10
-    Mtot_cluster = 1e2 | units.MSun
+    N_cluster = 1000
+    Mtot_cluster = 5. | units.MSun * N_cluster
     Rvir_cluster = 5. | units.parsec
     # initial velocity and position of the cluster's COM
     v_cluster = (2,2,0) | units.km/units.s
-    p_cluster = (-40,-40,0) | units.parsec
+    p_cluster = (-100,-100,0) | units.parsec
 
     # Setting a seed
     np.random.seed(1)
@@ -355,12 +361,14 @@ if __name__ == '__main__':
                                               v_cluster, p_cluster)
     cloud, conv_sph = cloud_init(N_cloud, Mtot_cloud, Rvir_cloud)
 
-    t_end = 40. | units.Myr
+    t_end = 100. | units.Myr
     dt_bridge = 0.1 | units.Myr
     dt_diag = 1.0 | units.Myr
     
 
-    lr9 = evolve(cluster,cloud, conv_grav,conv_sph, t_end,dt_bridge,dt_diag, sink=True)
+    lr_cloud, lr_cluster = evolve(cluster,cloud, conv_grav,conv_sph, t_end,dt_bridge,dt_diag, sink=True)
+    lr = np.hstack((lr_cloud, lr_cluster))
+    np.savetxt('lr.csv',lr,delimiter=',')
 
     with open('print_out.txt','a') as pf:
         pf.write('END RUNNING\n')
