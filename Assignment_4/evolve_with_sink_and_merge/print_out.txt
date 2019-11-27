@@ -1,0 +1,168 @@
+START RUNNING
+Initializing the star cluster and the molecular cloud...
+Setting up the gravity code and the hydro code...
+Bridging...
+star formation is considered
+Start evolving the molecular cloud...
+Time = 0.0 Myr
+identified 398 candidates; confirmed 398 new stars
+previous N: 0 in stars, 398 in sph.dm_particles;
+afterwards N: 398 in stars, 398 in sph.dm_particles;
+identifying merging groups...
+Two stars with [ 3.  3.] MSun collided at [-0.12 -1.15  0.56] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [-0.    0.01  0.02] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [-0.16  0.81  0.97] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 0.13 -0.22 -0.21] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [-0.55  1.07  1.21] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 1.15 -0.59 -0.12] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 1.16 -0.19  0.6 ] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [-0.41 -1.09  0.02] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 0.45 -1.    0.16] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 0.31  0.02  0.5 ] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 0.2   0.38 -0.96] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [-0.61  1.19  0.95] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [-0.01 -0.72  0.54] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 0.42 -0.6  -0.25] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [ 0.47  0.31  0.57] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Two stars with [ 3.  3.] MSun collided at [-0.94 -0.87 -0.93] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Time = 1.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 2.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 3.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 4.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 5.0 Myr
+identified 8 candidates; confirmed 8 new stars
+previous N: 382 in stars, 390 in sph.dm_particles;
+afterwards N: 390 in stars, 390 in sph.dm_particles;
+identifying merging groups...
+Two stars with [ 3.  3.] MSun collided at [-0.13 -0.11  0.02] pc;
+    new radius = [ 1.87  1.87] RSun, new radius = [ 1.87] RSun.
+Time = 6.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 7.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 8.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 9.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 10.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 11.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 12.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 13.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 14.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 15.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 16.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 17.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 18.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 19.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 20.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 21.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 22.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 23.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 24.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 25.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 26.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 27.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 28.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 29.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 30.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 31.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 32.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 33.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 34.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 35.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 36.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 37.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 38.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 39.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+Time = 40.0 Myr
+(no high density particle has been identified in this step)
+identifying merging groups...
+END RUNNING
