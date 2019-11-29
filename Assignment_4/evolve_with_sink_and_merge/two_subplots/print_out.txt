@@ -1,0 +1,89 @@
+START RUNNING
+Initializing the star cluster and the molecular cloud...
+Setting up the gravity code and the hydro code...
+Bridging...
+star formation is considered
+Start evolving the molecular cloud...
+Time = 0.0 Myr
+(no high density particle has been identified in this step)
+Time = 1.0 Myr
+(no high density particle has been identified in this step)
+Time = 2.0 Myr
+(no high density particle has been identified in this step)
+Time = 3.0 Myr
+(no high density particle has been identified in this step)
+Time = 4.0 Myr
+(no high density particle has been identified in this step)
+Time = 5.0 Myr
+(no high density particle has been identified in this step)
+Time = 6.0 Myr
+(no high density particle has been identified in this step)
+Time = 7.0 Myr
+(no high density particle has been identified in this step)
+Time = 8.0 Myr
+(no high density particle has been identified in this step)
+Time = 9.0 Myr
+(no high density particle has been identified in this step)
+Time = 10.0 Myr
+(no high density particle has been identified in this step)
+Time = 11.0 Myr
+(no high density particle has been identified in this step)
+Time = 12.0 Myr
+(no high density particle has been identified in this step)
+Time = 13.0 Myr
+(no high density particle has been identified in this step)
+Time = 14.0 Myr
+(no high density particle has been identified in this step)
+Time = 15.0 Myr
+(no high density particle has been identified in this step)
+Time = 16.0 Myr
+(no high density particle has been identified in this step)
+Time = 17.0 Myr
+(no high density particle has been identified in this step)
+Time = 18.0 Myr
+(no high density particle has been identified in this step)
+Time = 19.0 Myr
+(no high density particle has been identified in this step)
+Time = 20.0 Myr
+(no high density particle has been identified in this step)
+Time = 21.0 Myr
+(no high density particle has been identified in this step)
+Time = 22.0 Myr
+(no high density particle has been identified in this step)
+Time = 23.0 Myr
+(no high density particle has been identified in this step)
+Time = 24.0 Myr
+(no high density particle has been identified in this step)
+Time = 25.0 Myr
+(no high density particle has been identified in this step)
+Time = 26.0 Myr
+(no high density particle has been identified in this step)
+Time = 27.0 Myr
+(no high density particle has been identified in this step)
+Time = 28.0 Myr
+(no high density particle has been identified in this step)
+Time = 29.0 Myr
+(no high density particle has been identified in this step)
+Time = 30.0 Myr
+(no high density particle has been identified in this step)
+Time = 31.0 Myr
+(no high density particle has been identified in this step)
+Time = 32.0 Myr
+(no high density particle has been identified in this step)
+Time = 33.0 Myr
+(no high density particle has been identified in this step)
+Time = 34.0 Myr
+(no high density particle has been identified in this step)
+Time = 35.0 Myr
+(no high density particle has been identified in this step)
+Time = 36.0 Myr
+(no high density particle has been identified in this step)
+Time = 37.0 Myr
+(no high density particle has been identified in this step)
+Time = 38.0 Myr
+(no high density particle has been identified in this step)
+Time = 39.0 Myr
+(no high density particle has been identified in this step)
+Time = 40.0 Myr
+(no high density particle has been identified in this step)
+END RUNNING
