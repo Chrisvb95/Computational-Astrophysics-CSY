@@ -8,14 +8,15 @@
     # Cluster (typically, number of stars = 1e4-1e6, diameter = 3-100 pc ?)
     N_cluster = int(5e3)
     Mtot_cluster = 2. | units.MSun * N_cluster
-    Rvir_cluster = 3. | units.parsec   <------- don't be too small, otherwise gravity integration will be very slow
+    Rvir_cluster = 3. | units.parsec   ----> don't be smaller than this, otherwise gravity integration will be very slow
 
     # initial velocity and position of the cluster's COM
-    v_cluster = (10,10,0) | units.km/units.s
+    v_cluster = (10,10,0) | units.km/units.s   ----> this is fast, can try a slower one
     p_cluster = (-200,-200,0) | units.parsec
 
 sph.gas_particles.density.max() = 3.12553584314e-17 kg / (m**3)
-Jeans density = 4.1570761029538825e-17 kg / (m**3)    ---->  No star will form in very begining
+Jeans density = 4.1570761029538825e-17 kg / (m**3)    
+(if sph.gas_particles.density.max() < Jeans density, no star will form in very begining.)
 
 ---------------------------- Experiment 1 ----------------------------
 Mtot_cloud = 2. | units.MSun * N_cloud  -->  Mtot_cloud = 3. | units.MSun * N_cloud
@@ -25,8 +26,8 @@ Jeans density = 1.8475893790906145e-17 kg / (m**3)     --->  stars will form in 
 
 
 ---------------------------- Experiment 2 ----------------------------
-sph.gas_particles.density.max() = N_cloud = int(5e4)  -->  N_cloud = int(2e4)
-Jeans density = Mtot_cloud = 2. | units.MSun * N_cloud  -->  Mtot_cloud = 5. | units.MSun * N_cloud
+N_cloud = int(5e4)  -->  N_cloud = int(2e4)
+Mtot_cloud = 2. | units.MSun * N_cloud  -->  Mtot_cloud = 5. | units.MSun * N_cloud
 
 sph.gas_particles.density.max() = 2.09888809728e-17 kg / (m**3)
 Jeans density = 6.651321764726212e-18 kg / (m**3)     --->  stars will form in very begining
