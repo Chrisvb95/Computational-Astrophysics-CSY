@@ -168,10 +168,12 @@ def timescale(particles, unit=units.Myr, G=constants.G):
     return t_dyn, t_rh, t_ff
 
 
-def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35):
+def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35, seed=1):
     '''Initialises a star cluster that follows a powerlaw mass distribution.
        `N` is the number of star members, `Mtot` is the total mass of the cluster,
        and `Rvir` is the virial radius of the model.'''
+
+    np.random.seed(seed)
     converter = nbody_system.nbody_to_si(Mtot,Rvir)
     cluster = new_plummer_model(N,convert_nbody=converter)
     m_average = Mtot/N
@@ -192,12 +194,15 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35):
     return cluster, converter
 
 
-def cloud_init(Ngas, Mgas, Rgas):
+def cloud_init(Ngas, Mgas, Rgas, seed=1):
     '''Initialises the cloud'''
+
+    np.random.seed(seed)
     converter = nbody_system.nbody_to_si(Mgas,Rgas)
     #cloud = molecular_cloud(targetN=Ngas, convert_nbody=converter,\
     #                        base_grid=body_centered_grid_unit_cube).result
     cloud = new_plummer_gas_model(Ngas, convert_nbody=converter)
+
     return cloud, converter
 
 
@@ -353,7 +358,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         # set a density threshold (Jeans density) in the sph code
         density_threshold = Jeans_density(M=sph.gas_particles.mass.max())
         with open('cloud_data.txt', 'a') as f_cd_data:
-            f_cd_data.write('# Jeans density of the cloud = %f kg/m^3\n'%density_threshold)
+            f_cd_data.write('# Jeans density of the cloud = %.5e kg/m^3\n'%density_threshold.value_in(units.kg/units.m**3))
         sph.parameters.stopping_condition_maximum_density = density_threshold
         density_limit_detection = sph.stopping_conditions.density_limit_detection
         density_limit_detection.enable()
@@ -508,12 +513,13 @@ if __name__ == '__main__':
     p_cluster = (-200,-200,0) | units.parsec
 
     # Setting a seed
-    np.random.seed(1)
+    seed = 1
+    np.random.seed(seed)
 
     # Initialising the two systems
     cluster, conv_grav = cluster_init(N_cluster, Mtot_cluster, Rvir_cluster,\
-                                              v_cluster, p_cluster)
-    cloud, conv_sph = cloud_init(N_cloud, Mtot_cloud, Rvir_cloud)
+                                              v_cluster, p_cluster, seed)
+    cloud, conv_sph = cloud_init(N_cloud, Mtot_cloud, Rvir_cloud, seed)
 
     t_end = 100. | units.Myr
     dt_sph = 0.1 | units.Myr
