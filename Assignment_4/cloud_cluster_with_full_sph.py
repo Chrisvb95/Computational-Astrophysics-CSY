@@ -471,7 +471,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         with open('E_data.txt', 'a') as f_E_data:
             f_E_data.write(','.join(str(x) for x in E_data)+'\n')
         with open('cloud_data.txt', 'a') as f_cd_data:
-            f_cd_data.write('%.1f,%d,%f\n'%(t.value_in(unit_time), len(stars),\
+            f_cd_data.write('%.1f,%d,%.5e\n'%(t.value_in(unit_time), len(stars),\
                             sph.gas_particles.density.max().value_in(units.kg/units.m**3)))
 
         with open(printout_file, 'a') as pf:
