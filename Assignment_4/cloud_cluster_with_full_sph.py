@@ -194,7 +194,7 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35, seed=1):
     return cluster, converter
 
 
-def cloud_init(Ngas, Mgas, Rgas, user_plummer=True, seed=1):
+def cloud_init(Ngas, Mgas, Rgas, use_plummer=True, seed=1):
     '''Initialises the cloud'''
 
     np.random.seed(seed)
