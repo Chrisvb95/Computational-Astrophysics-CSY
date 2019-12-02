@@ -192,12 +192,15 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35):
     return cluster, converter
 
 
-def cloud_init(Ngas, Mgas, Rgas):
-    '''Initialises the cloud'''
+def cloud_init(Ngas, Mgas, Rgas, use_plummer = False):
+    '''Initialises the cloud using either a plummer model or an Amuse model that 
+       emulates a molecular cloud. '''
     converter = nbody_system.nbody_to_si(Mgas,Rgas)
-    #cloud = molecular_cloud(targetN=Ngas, convert_nbody=converter,\
-    #                        base_grid=body_centered_grid_unit_cube).result
-    cloud = new_plummer_gas_model(Ngas, convert_nbody=converter)
+    if use_plummer:
+        cloud = new_plummer_gas_model(Ngas, convert_nbody=converter)
+    else:
+        cloud = molecular_cloud(targetN=Ngas, convert_nbody=converter,\
+                            base_grid=body_centered_grid_unit_cube).result
     return cloud, converter
 
 
@@ -353,7 +356,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         # set a density threshold (Jeans density) in the sph code
         density_threshold = Jeans_density(M=sph.gas_particles.mass.max())
         with open('cloud_data.txt', 'a') as f_cd_data:
-            f_cd_data.write('# Jeans density of the cloud = %f kg/m^3\n'%density_threshold)
+            f_cd_data.write(f'# Jeans density of the cloud = {density_threshold} kg/m^3\n')
         sph.parameters.stopping_condition_maximum_density = density_threshold
         density_limit_detection = sph.stopping_conditions.density_limit_detection
         density_limit_detection.enable()
@@ -496,11 +499,11 @@ if __name__ == '__main__':
         pf.write('Initializing the star cluster and the molecular cloud...\n')
     # Molecular cloud (typically, mass = 1e3-1e7 MSun, diameter = 5-200 pc ?)
     N_cloud = int(5e4)
-    Mtot_cloud = 2. | units.MSun * N_cloud
+    Mtot_cloud = 1. | units.MSun * N_cloud
     Rvir_cloud = 10. | units.parsec
 
     # Cluster (typically, number of stars = 1e4-1e6, diameter = 3-100 pc ?)
-    N_cluster = int(5e3)
+    N_cluster = int(1e4)
     Mtot_cluster = 2. | units.MSun * N_cluster
     Rvir_cluster = 3. | units.parsec
     # initial velocity and position of the cluster's COM
@@ -513,7 +516,7 @@ if __name__ == '__main__':
     # Initialising the two systems
     cluster, conv_grav = cluster_init(N_cluster, Mtot_cluster, Rvir_cluster,\
                                               v_cluster, p_cluster)
-    cloud, conv_sph = cloud_init(N_cloud, Mtot_cloud, Rvir_cloud)
+    cloud, conv_sph = cloud_init(N_cloud, Mtot_cloud, Rvir_cloud,use_plummer=False)
 
     t_end = 100. | units.Myr
     dt_sph = 0.1 | units.Myr
