@@ -194,14 +194,17 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35, seed=1):
     return cluster, converter
 
 
-def cloud_init(Ngas, Mgas, Rgas, seed=1):
+def cloud_init(Ngas, Mgas, Rgas, user_plummer=True, seed=1):
     '''Initialises the cloud'''
 
     np.random.seed(seed)
+
     converter = nbody_system.nbody_to_si(Mgas,Rgas)
-    #cloud = molecular_cloud(targetN=Ngas, convert_nbody=converter,\
-    #                        base_grid=body_centered_grid_unit_cube).result
-    cloud = new_plummer_gas_model(Ngas, convert_nbody=converter)
+    if use_plummer == True:
+        cloud = new_plummer_gas_model(Ngas, convert_nbody=converter)
+    else:
+    cloud = molecular_cloud(targetN=Ngas, convert_nbody=converter,\
+                            base_grid=body_centered_grid_unit_cube).result
 
     return cloud, converter
 
