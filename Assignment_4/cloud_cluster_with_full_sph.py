@@ -1,8 +1,3 @@
-'''after removing the bridge, we should use only one-directional channel from `stars` to `sph.dm_particles`,
-and always remove the `stars` from the `cloud` before calculating the energy, Lagrange radii and so on.
-Also remember to plot the `stars` on top of `sph.dm_particles`.
-Anyway, try everything to distinguish between the cluster stars and newly formed stars!'''
-
 import numpy as np
 import matplotlib as mpl
 
@@ -27,6 +22,10 @@ mpl.rc('axes', linewidth=2, labelsize=20, labelpad=10,\
 mpl.rc('image', origin='lower')
 
 
+'''After the computers were updated in HL411, we found the `print` function doesn't work in the terminal, i.e.
+we cannot get instantaneous print-out in the terminal (everything will be printed out after the whole running is finished).
+Therefore, we have to save these print out messages into a specific text file in order to monitor the simulation.
+Here we set the filename of this 'print-out file' as a globle variable:'''
 printout_file = 'print_out.txt'
 
 
@@ -183,8 +182,11 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35):
     cluster.scale_to_standard(converter)
     cluster.velocity += init_v
     cluster.position += init_position
-    cluster.birth_age = -1. | units.Myr  # distinguish from the newly-formed stars in the cloud
 
+    # set `birth_age` to distinguish the cluster members from the newly-formed stars in the cloud
+    cluster.birth_age = -1. | units.Myr
+
+    # save data: initial mass distribution of the cluster
     np.savetxt('cluster_initial_mass.txt', cluster.mass.value_in(units.MSun))
 
     return cluster, converter
@@ -268,6 +270,11 @@ def merge_stars(sph, stars, merge_radius):
 
 
 def merge_two_stars(stars, particles_in_encounter):
+    '''merge two stars:
+      `stars` is the parent star set;
+      `particles_in_encounter` contains two stars that is going to merge'''
+
+    # update attributes for the new star particle
     com_pos = particles_in_encounter.center_of_mass()
     com_vel = particles_in_encounter.center_of_mass_velocity()
     new_particle = Particles(1)
@@ -279,13 +286,17 @@ def merge_two_stars(stars, particles_in_encounter):
     new_particle.velocity = com_vel
     new_particle.name = 'Star'
     new_particle.radius = particles_in_encounter.radius.max()
+
     stars.add_particles(new_particle)
+
     with open(printout_file,'a') as pf:
         pf.write(f'Two stars with {np.round(particles_in_encounter.mass.value_in(units.MSun),1)} MSun '+\
                  f'collided at {np.round(com_pos.value_in(units.parsec),2)} pc;\n'+\
                  f'    new radius = {np.round(particles_in_encounter.radius.value_in(units.RSun),2)} RSun, '+\
                  f'new radius = {np.round(new_particle.radius.value_in(units.RSun),2)} RSun.\n')
+
     stars.remove_particles(particles_in_encounter)
+
     return new_particle
 
 
@@ -295,7 +306,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
            sink=True, merge=False):
 
     with open(printout_file, 'a') as pf:
-        pf.write('Setting up the gravity code and the hydro code...\n')
+        pf.write('Setting up the hydro code...\n')
 
     '''# Initialising the direct N-body integrator
     gravity = ph4(converter_grav)
@@ -317,7 +328,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
     #cloud.h_smooth= eps
 
 
-    '''# Building a bridge between hydro and grav
+    '''# Building a bridge between hydro and gravity
     with open(printout_file, 'a') as pf:
         pf.write('Bridging...\n')
     grav_sph = bridge.Bridge(use_threading=False)
@@ -330,13 +341,16 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
     channel_from_sph_to_cloud = sph.gas_particles.new_channel_to(cloud)
     channel_from_sph_to_cluster = sph.dm_particles.new_channel_to(cluster)
 
-    # consider star formation
+    # considers star formation
     if sink == True:
         with open(printout_file,'a') as pf:
             pf.write('[Star formation is considered.]\n')
+
+        # `stars` is initialized as a particle set for potential new stars forming in the cloud
         stars = Particles(0)
         sph.dm_particles.add_particles(stars)
 
+        # set a density threshold (Jeans density) in the sph code
         density_threshold = Jeans_density(M=sph.gas_particles.mass.max())
         with open('cloud_data.txt', 'a') as f_cd_data:
             f_cd_data.write('# Jeans density of the cloud = %f kg/m^3\n'%density_threshold)
@@ -344,13 +358,13 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         density_limit_detection = sph.stopping_conditions.density_limit_detection
         density_limit_detection.enable()
 
-
+    # considers star merging
     if merge == True:
         merge_radius = 1e-4 | units.parsec  # 1 pc = 206265 AU
         with open(printout_file,'a') as pf:
             pf.write('[Star merging is considered.]\n')
 
-    # Initialize data lists (Lagrangian radii and relative total energy)
+    # Initializing data lists
     lr_cloud_list = [Lagrange_radii(cloud, converter_sph)]
     lr_cluster_list = [Lagrange_radii(cluster, converter_grav)]
 
@@ -366,7 +380,6 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
     max_gas_density = [sph.gas_particles.density.max().value_in(units.kg/units.m**3)]
 
 
-    # Start Evolving!
     # unify the unit of times
     unit_time = units.Myr
     t_end = t_end.in_(unit_time)
@@ -378,12 +391,13 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         pf.write('\nStart evolving the molecular cloud...\n')
         pf.write(f'End time = {t_end}; Diagnostic timestep = {dt_diag}; sph code timestep = {dt_sph}.\n')
 
+    # Real start for evolution!
     for i,t in enumerate(times):
         with open(printout_file, 'a') as pf:
             pf.write(f'---------- Time = {t.in_(units.Myr)} ----------\n')
 
-        # calculate the dynamical(dyn), half-mass relaxation(rh), and free-fall(ff) timescales
-        # of both the cloud and the cluster systems
+        # calculates the dynamical(dyn), half-mass relaxation(rh), and free-fall(ff) timescales
+        # for both the cloud and the cluster
         t_dyn_cloud, t_rh_cloud, t_ff_cloud = timescale(cloud, unit_time)
         t_dyn_cluster, t_rh_cluster, t_ff_cluster = timescale(cluster, unit_time)
         all_timescales = [t_dyn_cloud, t_rh_cloud, t_ff_cloud, t_dyn_cluster, t_rh_cluster, t_ff_cluster] | unit_time
@@ -394,8 +408,9 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
             with open(printout_file, 'a') as pf:
                 pf.write(f'Change the bridge timestep from {dt_sph_old} to {dt_sph}.\n')
 
+        # considers star information
+        # (make sure that at this time, elements in 'stars' and 'sph.gas_particles' are the same)
         if sink == True:
-            # make sure at this time, elements in 'stars' and 'sph.gas_particles' are the same
             resolve_sinks(sph, stars, cloud, density_threshold, t)
 
         # evolve for one diagnostic timestep
@@ -405,6 +420,9 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         #channel_from_grav_to_cluster.copy()
         channel_from_sph_to_cloud.copy()
         channel_from_sph_to_cluster.copy()
+
+        # remove newly formed stars from `cluster` after using channels
+        # (since both `stars` and `cluster` are added as dm_particles in sph, we have to distinguish them by `birth_age`)
         if len(stars) > 0:
             newstars = cluster.select_array(lambda birth_age: birth_age >= 0.|unit_time , ["birth_age"])
             cluster.remove_particles(newstars)
@@ -414,6 +432,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         if merge == True:
             merge_stars(sph, stars, merge_radius)
 
+        # sanity check
         with open(printout_file,'a') as pf:
             pf.write('Number of stars in `cluster`= %d; in `stars` = %d; in `sph.dm_particles`= %d.\n'\
                      %(len(cluster), len(stars), len(sph.dm_particles)))
@@ -422,7 +441,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         plot_cloud_cluster(cluster, sph, stars, title='{0}'.format(float(t.value_in(units.Myr))),\
                            vrange=[-5,3])
 
-        # save data (energy will be added afterwards)
+        # save data
         lr_cloud = Lagrange_radii(cloud, converter_sph)
         lr_cloud_list.append(lr_cloud)
         lr_cluster = Lagrange_radii(cluster, converter_grav)
