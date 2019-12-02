@@ -203,8 +203,8 @@ def cloud_init(Ngas, Mgas, Rgas, user_plummer=True, seed=1):
     if use_plummer == True:
         cloud = new_plummer_gas_model(Ngas, convert_nbody=converter)
     else:
-    cloud = molecular_cloud(targetN=Ngas, convert_nbody=converter,\
-                            base_grid=body_centered_grid_unit_cube).result
+        cloud = molecular_cloud(targetN=Ngas, convert_nbody=converter,\
+                                base_grid=body_centered_grid_unit_cube).result
 
     return cloud, converter
 
