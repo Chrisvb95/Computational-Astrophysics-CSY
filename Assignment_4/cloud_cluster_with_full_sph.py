@@ -6,7 +6,7 @@ Anyway, try everything to distinguish between the cluster stars and newly formed
 import numpy as np
 import matplotlib as mpl
 
-from amuse.lab import * 
+from amuse.lab import *
 from amuse.units import units, nbody_system, quantities
 from amuse.couple import bridge
 from amuse.community.fi.interface import Fi
@@ -65,7 +65,7 @@ def plot_cloud_cluster(cluster, sph, stars, title, vrange=[-6,2]):
     #L = 2 * (np.ceil(np.max(np.abs(gas_position))/100.) * 100.)
     L = 600
 
-    rho = make_map(sph, L) 
+    rho = make_map(sph, L)
     rhomin = int(np.log10(1.e-5+rho.value_in(units.amu/units.cm**3)).min())
     rhomax = np.ceil(np.log10(1.e-5+rho.value_in(units.amu/units.cm**3)).max())
 
@@ -118,10 +118,10 @@ def plot_cloud_cluster(cluster, sph, stars, title, vrange=[-6,2]):
     plt.close()
 
     return None
-    
+
 
 def Lagrange_radii(model, converter):
-    ''' Returns the 0.2, 0.5 and 0.9 Lagrangia radii'''      
+    ''' Returns the 0.2, 0.5 and 0.9 Lagrangia radii'''
     lr,mr = model.LagrangianRadii(converter)
     return np.take(lr.value_in(units.parsec),[4,5,7])
 
@@ -184,6 +184,9 @@ def cluster_init(N, Mtot, Rvir, init_v, init_position, alpha=-2.35):
     cluster.velocity += init_v
     cluster.position += init_position
     cluster.birth_age = -1. | units.Myr  # distinguish from the newly-formed stars in the cloud
+
+    np.savetxt('cluster_initial_mass.txt', cluster.mass.value_in(units.MSun))
+
     return cluster, converter
 
 
@@ -220,7 +223,7 @@ def resolve_sinks(sph, stars, cloud, density_thr, model_time):
         for cs in candidate_stars:
             # if a candidate star has not been considered as a newly formed star before, add it
             if cs not in stars:
-                # update the radius of the new star, otherwise it will inherit the same radius 
+                # update the radius of the new star, otherwise it will inherit the same radius
                 # from the gas particle, which is unresonably large for a ZAMS star
                 cs.radius = MRR(cs.mass)
                 newstars.add_particle(cs)
@@ -248,7 +251,7 @@ def merge_stars(sph, stars, merge_radius):
 
     with open(printout_file,'a') as pf:
         pf.write('identifying merging groups...\n')
-    # select out star pairs in which the distance between two members is smaller than `merge_radius` 
+    # select out star pairs in which the distance between two members is smaller than `merge_radius`
     ccs = stars.copy().connected_components(threshold=merge_radius)
     if len(ccs) <= 0:
         with open(printout_file,'a') as pf:
@@ -262,7 +265,7 @@ def merge_stars(sph, stars, merge_radius):
             new_star = merge_two_stars(stars, cc.copy())
             sph.dm_particles.remove_particles(cc)
             sph.dm_particles.add_particles(new_star)
-    
+
 
 def merge_two_stars(stars, particles_in_encounter):
     com_pos = particles_in_encounter.center_of_mass()
@@ -335,6 +338,8 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         sph.dm_particles.add_particles(stars)
 
         density_threshold = Jeans_density(M=sph.gas_particles.mass.max())
+        with open('cloud_data.txt', 'a') as f_cd_data:
+            f_cd_data.write('# Jeans density of the cloud = %f kg/m^3\n'%density_threshold)
         sph.parameters.stopping_condition_maximum_density = density_threshold
         density_limit_detection = sph.stopping_conditions.density_limit_detection
         density_limit_detection.enable()
@@ -358,6 +363,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
     E_cluster_list = [E0_cluster/Etot0_cluster]
 
     n_formed_star = [0]
+    max_gas_density = [sph.gas_particles.density.max().value_in(units.kg/units.m**3)]
 
 
     # Start Evolving!
@@ -428,6 +434,7 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         E_cluster_list.append(E_cluster)
 
         n_formed_star.append(len(stars))
+        max_gas_density.append(sph.gas_particles.density.max().value_in(units.kg/units.m**3))
 
         # save data instantaneously
         lr_data = np.concatenate(([t.value_in(unit_time)], lr_cloud, lr_cluster))
@@ -436,8 +443,9 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
             f_lr_data.write(','.join(str(x) for x in lr_data)+'\n')
         with open('E_data.txt', 'a') as f_E_data:
             f_E_data.write(','.join(str(x) for x in E_data)+'\n')
-        with open('formed_star_data.txt', 'a') as f_fs_data:
-            f_fs_data.write('%f,%d\n'%(t.value_in(unit_time), len(stars)))
+        with open('cloud_data.txt', 'a') as f_cd_data:
+            f_cd_data.write('%.1f,%d,%f\n'%(t.value_in(unit_time), len(stars),\
+                            sph.gas_particles.density.max().value_in(units.kg/units.m**3)))
 
         with open(printout_file, 'a') as pf:
             pf.write(f'Finished.\n')
@@ -445,7 +453,8 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
     #gravity.stop()
     sph.stop()
 
-    return times.value_in(unit_time), n_formed_star, lr_cloud_list, lr_cluster_list, E_cloud_list, E_cluster_list
+    return times.value_in(unit_time), n_formed_star, max_gas_density,\
+           lr_cloud_list, lr_cluster_list, E_cloud_list, E_cluster_list
 
 
 
@@ -459,9 +468,9 @@ if __name__ == '__main__':
         f_lr_data.write('# Time, lr2_cd, lr5_cd, lr9_cd, lr2_cr, lr5_cr, lr9_cr\n')
     with open('E_data.txt', 'w') as f_E_data:
         f_E_data.write('# Time, Ek_cd, Ep_cd, Etot_cd; Ek_cr, Ep_cr, Etot_cr\n')
-    with open('formed_star_data.txt', 'w') as f_fs_data:
-        f_fs_data.write('# Time, Number of newly formed star\n')
-        
+    with open('cloud_data.txt', 'w') as f_cd_data:
+        f_cd_data.write('# Time, number of newly formed star, maxmium gas density (kg/m^3)\n')
+
 
     # Set initial parameters
     with open(printout_file, 'a') as pf:
@@ -490,8 +499,8 @@ if __name__ == '__main__':
     t_end = 100. | units.Myr
     dt_sph = 0.1 | units.Myr
     dt_diag = 1.0 | units.Myr
-    
-    for filename in [printout_file, 'lr_data.txt', 'E_data.txt', 'formed_star_data.txt']:
+
+    for filename in [printout_file, 'lr_data.txt', 'E_data.txt', 'cloud_data.txt']:
         with open(filename,'a') as f:
             f.write('# Cloud: number of gas particles: %d, total mass: %d MSun, virial radius: %d pc;\n'\
                      %(N_cloud, Mtot_cloud.value_in(units.MSun), Rvir_cloud.value_in(units.parsec)))
@@ -500,8 +509,8 @@ if __name__ == '__main__':
             f.write(f'# Initial position of cluster: {p_cluster.in_(units.parsec)}; '+\
                     f'Initial velocity of cluster: {v_cluster.in_(units.kms)}.\n')
 
-    times, n_formed_star, lr_cloud, lr_cluster, E_cloud, E_cluster = evolve(cluster,cloud, conv_grav,conv_sph,\
-                                                      t_end,dt_sph,dt_diag, sink=True, merge=False)
+    times, n_formed_star, max_gas_density, lr_cloud, lr_cluster, E_cloud, E_cluster =\
+           evolve(cluster,cloud, conv_grav,conv_sph, t_end,dt_sph,dt_diag, sink=True, merge=False)
 
     #with open(printout_file,'a') as pf:
     #    pf.write('Saving data...\n')
@@ -512,11 +521,3 @@ if __name__ == '__main__':
 
     with open(printout_file,'a') as pf:
         pf.write('END RUNNING\n')
-
-    
-    
-    
-    
-    
-    
-    

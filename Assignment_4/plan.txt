@@ -15,5 +15,12 @@
 
 --- Carry out experiment ---
 - Run simulation for different parameters
-- Analyse results
+- Analyze results
 - Write paper 
+
+--- update after several trials ---
+- Add output data: initial mass distribution of cluster, cloud.density.max()/mean() vs time
+- try larger total mass of cluster (cloud initialization is fine and can be fixed I think)
+- try smaller initial velocity of cluster (passing slowly through the cloud does exert more influence to the cloud)
+- control `t_end` according to the initial velocity of cluster (don't need to run for long time if `initial_v` is large, since the x/y_limit of the plot has been fixed)
+- if possible, don't increase the total mass by assigning large (average) mass to each gas particle or star, instead by increasing the number of particles, though time cost will be more expensive.
