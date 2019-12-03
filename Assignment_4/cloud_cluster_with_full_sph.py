@@ -410,9 +410,9 @@ def evolve(cluster,cloud, converter_grav,converter_sph, t_end, dt_sph, dt_diag,\
         t_dyn_cluster, t_rh_cluster, t_ff_cluster = timescale(cluster, unit_time)
         all_timescales = [t_dyn_cloud, t_rh_cloud, t_ff_cloud, t_dyn_cluster, t_rh_cluster, t_ff_cluster] | unit_time
         # check if the bridge timestep should be reduced
-        if all_timescales.amax() < 10 * dt_sph:
+        if all_timescales.amin() < 10 * dt_sph:
             dt_sph_old = dt_sph
-            dt_sph = all_timescales.amax() / 10.
+            dt_sph = all_timescales.amin() / 10.
             with open(printout_file, 'a') as pf:
                 pf.write(f'Change the bridge timestep from {dt_sph_old} to {dt_sph}.\n')
 
