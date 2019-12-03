@@ -1,0 +1,495 @@
+START RUNNING
+Initializing the star cluster and the molecular cloud...
+# Cloud: number of gas particles: 50000, total mass: 99999 MSun, virial radius: 10 pc;
+# Cluster: number of stars: 5000, total mass: 10000 MSun, virial radius: 3 pc;
+# Initial position of cluster: [-200, -200, 0] parsec; Initial velocity of cluster: [3, 3, 0] kms.
+Setting up the hydro code...
+[Star formation is considered.]
+
+Start evolving the molecular cloud...
+End time = 120.0 Myr; Diagnostic timestep = 1.0 Myr; sph code timestep = 0.1 Myr.
+---------- Time = 0.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 1.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 2.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 3.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 4.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 5.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 6.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 7.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 8.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 9.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 10.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 11.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 12.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 13.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 14.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 15.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 16.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 17.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 18.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 19.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 20.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 21.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 22.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 23.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 24.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 25.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 26.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 27.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 28.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 29.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 30.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 31.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 32.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 33.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 34.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 35.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 36.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 37.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 38.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 39.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 40.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 41.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 42.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 43.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 44.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 45.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 46.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 47.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 48.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 49.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 50.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 51.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 52.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 53.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 54.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 55.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 56.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 57.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 58.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 59.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 60.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 61.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 62.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 63.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 64.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 65.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 66.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 67.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 68.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 69.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 70.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 71.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 72.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 73.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 74.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 75.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 76.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 77.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 78.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 79.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 80.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 81.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 82.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 83.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 84.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 85.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 86.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 87.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 88.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 89.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 90.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 91.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 92.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 93.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 94.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 95.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 96.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 97.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 98.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 99.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 100.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 101.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 102.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 103.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 104.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 105.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 106.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 107.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 108.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 109.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 110.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 111.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 112.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 113.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 114.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 115.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 116.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 117.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 118.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 119.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+---------- Time = 120.0 Myr ----------
+(no high density particle has been identified in this step)
+Number of stars in `cluster`= 5000; in `stars` = 0; in `sph.dm_particles`= 5000.
+Finished.
+END RUNNING
